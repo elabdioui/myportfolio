@@ -98,7 +98,7 @@ export function Hero() {
             }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-              John Doe
+              Haitham El Abdioui
             </span>
           </motion.h1>
           <motion.h2 
@@ -106,7 +106,7 @@ export function Hero() {
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            Web Development Student
+            Software engineering Student
           </motion.h2>
 
           <motion.a
@@ -132,8 +132,8 @@ export function Hero() {
           transition={{ delay: 0.5 }}
         >
           {[
-            { icon: <Github className="w-8 h-8" />, href: "https://github.com" },
-            { icon: <Linkedin className="w-8 h-8" />, href: "https://linkedin.com" },
+            { icon: <Github className="w-8 h-8" />, href: "https://github.com/elabdioui" },
+            { icon: <Linkedin className="w-8 h-8" />, href: "https://www.linkedin.com/in/haithamelabdioui/" },
             { icon: <Code2 className="w-8 h-8" />, href: "#projects" },
           ].map((item, index) => (
             <motion.a

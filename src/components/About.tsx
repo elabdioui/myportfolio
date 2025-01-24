@@ -20,7 +20,7 @@ export function About() {
       description: "Developed e-commerce website for local business"
     },
     {
-      year: "2022",
+      year: "2021",
       title: "Started Coding Journey",
       description: "Began learning HTML, CSS, and JavaScript"
     }
