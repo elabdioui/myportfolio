@@ -4,6 +4,7 @@ import {
   Briefcase, Award, Users, Calendar, MapPin, Globe
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
+import { Tilt } from 'react-tilt';
 
 export function About() {
   const [ref, inView] = useInView({
@@ -25,31 +26,23 @@ export function About() {
         "Built user interfaces with Power Apps and real-time dashboards with Power BI"
       ],
       icon: <Briefcase className="w-5 h-5" />,
-      color: "from-green-400 to-emerald-500"
+      color: "from-green-400 to-emerald-500",
+      story: "Leading the digital transformation of LPG distribution systems across Cameroon"
     },
     {
       year: "2024",
       title: "Python Developer at SEWS-CABIND",
       type: "work",
       duration: "July 2024",
-      description: "Developed billing management web application with Django",
+      description: "Building the foundation of IT product billing automation",
       details: [
         "Built comprehensive billing system for IT products",
         "Automated data import from Excel files using Pandas",
         "Participated in full-cycle development: design, implementation, deployment"
       ],
       icon: <Code className="w-5 h-5" />,
-      color: "from-blue-400 to-cyan-500"
-    },
-    {
-      year: "2024",
-      title: "EMSI IT Summer Competition",
-      type: "achievement",
-      duration: "2024",
-      description: "Participated in competitive programming and development challenges",
-      details: ["Showcased technical skills in competitive environment"],
-      icon: <Award className="w-5 h-5" />,
-      color: "from-yellow-400 to-orange-500"
+      color: "from-blue-400 to-cyan-500",
+      story: "Transforming manual billing processes into an automated, efficient system"
     },
     {
       year: "2023",
@@ -62,10 +55,11 @@ export function About() {
         "Focus on software engineering, network systems, and business applications"
       ],
       icon: <GraduationCap className="w-5 h-5" />,
-      color: "from-purple-400 to-violet-500"
+      color: "from-purple-400 to-violet-500",
+      story: "Mastering the intersection of technology and business management"
     },
     {
-      year: "2023",
+      year: "2021",
       title: "Technical University Degree",
       type: "education",
       duration: "Sept 2021 - June 2023",
@@ -75,7 +69,8 @@ export function About() {
         "Specialized in Mathematical and Computer Methods in Physics (MIP)"
       ],
       icon: <GraduationCap className="w-5 h-5" />,
-      color: "from-indigo-400 to-purple-500"
+      color: "from-indigo-400 to-purple-500",
+      story: "Discovering the mathematical foundations of computer science"
     },
     {
       year: "2021",
@@ -85,7 +80,8 @@ export function About() {
       description: "Physical Sciences & Chemistry at Lycée Al Yassamine, Berrechid",
       details: ["Strong foundation in scientific principles and analytical thinking"],
       icon: <GraduationCap className="w-5 h-5" />,
-      color: "from-pink-400 to-rose-500"
+      color: "from-pink-400 to-rose-500",
+      story: "Where analytical thinking and problem-solving skills were born"
     }
   ];
 
@@ -205,19 +201,29 @@ export function About() {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
             {/* Personal Info & Photo */}
             <div className="xl:col-span-1 space-y-8">
-              <motion.div
+              <Tilt
                 className="relative group mx-auto w-80 h-80"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                options={{
+                  max: 25,
+                  scale: 1.05,
+                  speed: 1000,
+                  glare: true,
+                  "max-glare": 0.5,
+                }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-                <img
-                  src="/src/assets/maphoto.jpg"
-                  alt="Profile Photo"
-                  className="relative rounded-3xl shadow-2xl w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={inView ? { opacity: 1, scale: 1 } : {}}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
+                  <img
+                    src="/src/assets/maphoto.jpg"
+                    alt="Profile Photo"
+                    className="relative rounded-3xl shadow-2xl w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </motion.div>
+              </Tilt>
 
               {/* Quick Facts */}
               <motion.div
@@ -286,7 +292,14 @@ export function About() {
                       {item.icon}
                     </div>
                     
-                    <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-colors group">
+                    <Tilt
+                      className="bg-gray-900/50 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-colors group"
+                      options={{
+                        max: 15,
+                        scale: 1.02,
+                        speed: 1000,
+                      }}
+                    >
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${item.color} text-white`}>
                           {item.duration}
@@ -299,6 +312,8 @@ export function About() {
                       <h4 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">
                         {item.title}
                       </h4>
+                      
+                      <p className="text-lg text-blue-300 italic mb-4">"{item.story}"</p>
                       <p className="text-gray-300 mb-4">{item.description}</p>
                       
                       <ul className="space-y-2">
@@ -309,7 +324,12 @@ export function About() {
                           </li>
                         ))}
                       </ul>
-                    </div>
+
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        initial={false}
+                      />
+                    </Tilt>
                   </motion.div>
                 ))}
               </div>
@@ -350,20 +370,31 @@ export function About() {
             <h3 className="text-2xl font-bold mb-8 text-center">Leadership & Community</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {leadership.map((item, index) => (
-                <motion.div
+                <Tilt
                   key={index}
                   className="bg-gray-900/30 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-purple-400/30 transition-all group"
-                  whileHover={{ scale: 1.02 }}
+                  options={{
+                    max: 25,
+                    scale: 1.05,
+                    speed: 1000,
+                  }}
                 >
-                  <div className="flex items-start gap-3 mb-3">
-                    <Users className="w-6 h-6 text-purple-400 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold group-hover:text-purple-400 transition-colors">{item.title}</h4>
-                      <p className="text-sm text-blue-400 mb-2">{item.role}</p>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="flex items-start gap-3 mb-3">
+                      <Users className="w-6 h-6 text-purple-400 mt-1 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold group-hover:text-purple-400 transition-colors">{item.title}</h4>
+                        <p className="text-sm text-blue-400 mb-2">{item.role}</p>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-sm text-gray-400">{item.description}</p>
-                </motion.div>
+                    <p className="text-sm text-gray-400">{item.description}</p>
+                  </motion.div>
+                </Tilt>
               ))}
             </div>
           </motion.div>
@@ -378,13 +409,22 @@ export function About() {
             <h3 className="text-2xl font-bold mb-8 text-center">Interests & Hobbies</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {hobbies.map((hobby, index) => (
-                <motion.div
+                <Tilt
                   key={index}
                   className="group relative bg-gray-900/30 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-blue-400/30"
-                  whileHover={{ scale: 1.05, rotateY: 5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  options={{
+                    max: 25,
+                    scale: 1.05,
+                    speed: 1000,
+                    glare: true,
+                    "max-glare": 0.5,
+                  }}
                 >
-                  <div className="p-6 text-center relative z-10">
+                  <motion.div
+                    className="p-6 text-center relative z-10"
+                    whileHover={{ scale: 1.05, rotateY: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <motion.div
                       className="w-12 h-12 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center"
                       whileHover={{ rotate: 360 }}
@@ -396,12 +436,12 @@ export function About() {
                     <p className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       {hobby.description}
                     </p>
-                  </div>
+                  </motion.div>
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     initial={false}
                   />
-                </motion.div>
+                </Tilt>
               ))}
             </div>
           </motion.div>
