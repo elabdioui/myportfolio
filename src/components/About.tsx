@@ -213,8 +213,8 @@ export function About() {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
                 <img
-                  src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
-                  alt="Profile"
+                  src="/src/assets/maphoto.jpg"
+                  alt="Profile Photo"
                   className="relative rounded-3xl shadow-2xl w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </motion.div>
