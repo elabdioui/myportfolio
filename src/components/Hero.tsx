@@ -12,7 +12,6 @@ export function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef(null);
 
-  // Mouse parallax effect
   useEffect(() => {
     const handleMouseMove = (e) => {
       const { clientX, clientY } = e;
@@ -33,7 +32,6 @@ export function Hero() {
     document.documentElement.classList.toggle('dark');
   };
 
-  // Text animation variants
   const nameCharacters = "Haitham El Abdioui".split("");
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,7 +57,6 @@ export function Hero() {
     },
   };
 
-  // Magnetic button effect
   const magneticRef = useRef(null);
   const handleMagneticMove = (e) => {
     const magnetic = magneticRef.current;
@@ -92,73 +89,64 @@ export function Hero() {
   return (
     <section 
       id="hero" 
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden"
       ref={containerRef}
     >
-      {/* Enhanced Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Geometric Shapes */}
-        {[...Array(5)].map((_, i) => (
+      {/* Stars Background */}
+      <div className="absolute inset-0">
+        {[...Array(200)].map((_, i) => (
           <motion.div
-            key={`shape-${i}`}
-            className="absolute bg-gradient-to-r from-blue-500/10 to-purple-500/10"
+            key={`star-${i}`}
+            className="absolute rounded-full bg-white"
             style={{
-              width: Math.random() * 300 + 100,
-              height: Math.random() * 300 + 100,
-              borderRadius: Math.random() * 50 + '%',
+              width: Math.random() * 2 + 1,
+              height: Math.random() * 2 + 1,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              opacity: Math.random() * 0.7 + 0.3,
             }}
             animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              rotate: [0, 360],
+              opacity: [0.3, 1, 0.3],
               scale: [1, 1.2, 1],
             }}
             transition={{
-              duration: Math.random() * 20 + 10,
+              duration: Math.random() * 3 + 2,
               repeat: Infinity,
               repeatType: "reverse",
             }}
           />
         ))}
-
-        {/* Enhanced Particles */}
-        {[...Array(80)].map((_, i) => (
-          <motion.div
-            key={`particle-${i}`}
-            className="absolute rounded-full"
-            style={{
-              width: Math.random() * 4 + 2,
-              height: Math.random() * 4 + 2,
-              background: `linear-gradient(to right, 
-                rgba(59, 130, 246, ${Math.random() * 0.5 + 0.3}), 
-                rgba(147, 51, 234, ${Math.random() * 0.5 + 0.3})
-              )`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              filter: 'blur(1px)',
-            }}
-            animate={{
-              x: [0, (Math.random() - 0.5) * 100],
-              y: [0, (Math.random() - 0.5) * 100],
-              scale: [1, Math.random() * 1.5 + 0.5, 1],
-              opacity: [0.3, 0.7, 0.3],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-
-        {/* Atmospheric Fog Effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/40 mix-blend-overlay" />
       </div>
 
-      {/* Enhanced Cursor */}
+      {/* Nebula Effects */}
+      <div className="absolute inset-0">
+        {[...Array(3)].map((_, i) => (
+          <motion.div
+            key={`nebula-${i}`}
+            className="absolute bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5"
+            style={{
+              width: Math.random() * 500 + 300,
+              height: Math.random() * 500 + 300,
+              borderRadius: '50%',
+              filter: 'blur(100px)',
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+              rotate: [0, 360],
+            }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Custom Cursor */}
       <motion.div
         className="fixed top-0 left-0 pointer-events-none z-50 mix-blend-difference"
         style={{
@@ -179,17 +167,12 @@ export function Hero() {
         />
       </motion.div>
 
-      {/* Theme Toggle with Enhanced Animation */}
+      {/* Theme Toggle */}
       <motion.button
         onClick={toggleTheme}
-        className="fixed top-4 right-4 p-3 bg-white bg-opacity-10 rounded-full backdrop-blur-sm border border-white/20"
+        className="fixed top-4 right-4 p-3 bg-white/5 backdrop-blur-sm rounded-full border border-white/10"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
-        animate={{
-          rotate: isDark ? 0 : 180,
-          backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)",
-        }}
-        transition={{ duration: 0.3 }}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -208,7 +191,7 @@ export function Hero() {
         </AnimatePresence>
       </motion.button>
 
-      {/* Main Content with Enhanced Animations */}
+      {/* Main Content */}
       <div className="container mx-auto px-4 text-center z-10 max-w-6xl mt-20 md:mt-32">
         <motion.div
           initial={{ opacity: 0 }}
@@ -218,7 +201,6 @@ export function Hero() {
             transform: `perspective(1000px) rotateX(${mousePosition.y * 2}deg) rotateY(${mousePosition.x * 2}deg)`,
           }}
         >
-          {/* Enhanced Greeting Animation */}
           <motion.p 
             className="text-xl md:text-2xl text-gray-300 mb-4"
             initial={{ opacity: 0, y: 20 }}
@@ -228,7 +210,6 @@ export function Hero() {
             Hello, I'm
           </motion.p>
 
-          {/* Enhanced Name Animation */}
           <motion.h1 
             className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 aurora-text glow-effect leading-tight"
             variants={containerVariants}
@@ -249,7 +230,6 @@ export function Hero() {
             ))}
           </motion.h1>
 
-          {/* Enhanced Title Animation */}
           <motion.h2 
             className="text-2xl md:text-4xl lg:text-5xl font-semibold mb-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -264,7 +244,6 @@ export function Hero() {
             Software Engineering Student
           </motion.h2>
 
-          {/* Enhanced Description */}
           <motion.div
             className="max-w-4xl mx-auto mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -305,14 +284,13 @@ export function Hero() {
             </div>
           </motion.div>
 
-          {/* Enhanced Action Buttons */}
+          {/* Action Buttons */}
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
           >
-            {/* Primary Button with Magnetic Effect */}
             <motion.div
               ref={magneticRef}
               onMouseMove={handleMagneticMove}
@@ -343,10 +321,9 @@ export function Hero() {
               </motion.a>
             </motion.div>
 
-            {/* Secondary Button with Enhanced Hover Effect */}
             <motion.a
               href="#contact"
-              className="relative px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full font-semibold text-white hover:bg-white/20 transition-all flex items-center gap-2 overflow-hidden"
+              className="relative px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full font-semibold text-white hover:bg-white/10 transition-all flex items-center gap-2 overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -361,7 +338,7 @@ export function Hero() {
             </motion.a>
           </motion.div>
 
-          {/* Enhanced Social Links */}
+          {/* Social Links */}
           <motion.div
             className="flex justify-center gap-6"
             initial={{ opacity: 0 }}
@@ -415,7 +392,7 @@ export function Hero() {
         </motion.div>
       </div>
 
-      {/* Enhanced Scroll Indicator */}
+      {/* Scroll Indicator */}
       <motion.div
         className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
         animate={{ 
@@ -455,7 +432,6 @@ export function Hero() {
         </a>
       </motion.div>
 
-      {/* CSS Styles */}
       <style jsx>{`
         @keyframes aurora {
           0%, 100% { background-position: 0% 50%; }
