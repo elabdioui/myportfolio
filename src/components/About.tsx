@@ -175,8 +175,8 @@ export function About() {
                 <div className="relative bg-gray-900 p-8 rounded-3xl border border-white/10">
                   <div className="relative w-full aspect-square mb-6 overflow-hidden rounded-2xl">
                     <img
-                      src="/images/haitham.jpg"
-                      alt="Haitham El Abdioui"
+                      src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
+                      alt="Profile"
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
