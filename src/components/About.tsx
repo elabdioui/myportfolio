@@ -27,7 +27,8 @@ export function About() {
       ],
       icon: <Briefcase className="w-5 h-5" />,
       color: "from-green-400 to-emerald-500",
-      story: "Leading the digital transformation of LPG distribution systems across Cameroon"
+      story: "Leading the digital transformation of LPG distribution systems across Cameroon",
+      logo: "https://www.ola-energy.com/sites/default/files/logo.png"
     },
     {
       year: "2024",
@@ -42,7 +43,8 @@ export function About() {
       ],
       icon: <Code className="w-5 h-5" />,
       color: "from-blue-400 to-cyan-500",
-      story: "Transforming manual billing processes into an automated, efficient system"
+      story: "Transforming manual billing processes into an automated, efficient system",
+      logo: "https://www.sews-cabind.com/images/logo.png"
     },
     {
       year: "2023",
@@ -56,7 +58,9 @@ export function About() {
       ],
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-purple-400 to-violet-500",
-      story: "Mastering the intersection of technology and business management"
+      story: "Mastering the intersection of technology and business management",
+      logo: "https://www.emsi.ma/wp-content/uploads/2019/07/logo-emsi.png",
+      technologies: ["react", "nodejs", "python", "java", "csharp"]
     },
     {
       year: "2021",
@@ -70,7 +74,9 @@ export function About() {
       ],
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-indigo-400 to-purple-500",
-      story: "Discovering the mathematical foundations of computer science"
+      story: "Discovering the mathematical foundations of computer science",
+      logo: "https://www.univh1.ma/wp-content/uploads/2018/12/logo.png",
+      technologies: ["python", "java", "matlab"]
     },
     {
       year: "2021",
@@ -81,7 +87,8 @@ export function About() {
       details: ["Strong foundation in scientific principles and analytical thinking"],
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-pink-400 to-rose-500",
-      story: "Where analytical thinking and problem-solving skills were born"
+      story: "Where analytical thinking and problem-solving skills were born",
+      logo: "https://example.com/lycee-logo.png"
     }
   ];
 
@@ -154,39 +161,12 @@ export function About() {
         ))}
       </div>
 
-      {/* Nebula Effects */}
-      <div className="absolute inset-0">
-        {[...Array(5)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
-            style={{
-              width: Math.random() * 500 + 300,
-              height: Math.random() * 500 + 300,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.1, 0.3, 0.1],
-              rotate: [0, 180, 360],
-            }}
-            transition={{
-              duration: Math.random() * 20 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
-      </div>
-
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="max-w-7xl mx-auto"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
@@ -198,11 +178,11 @@ export function About() {
             cloud technologies, and innovative business solutions.
           </p>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Personal Info & Photo */}
-            <div className="xl:col-span-1 space-y-8">
+            <div className="lg:col-span-4 space-y-8">
               <Tilt
-                className="relative group mx-auto w-80 h-80"
+                className="relative group mx-auto w-full max-w-sm"
                 options={{
                   max: 25,
                   scale: 1.05,
@@ -275,8 +255,8 @@ export function About() {
             </div>
 
             {/* Timeline */}
-            <div className="xl:col-span-2 space-y-8">
-              <h3 className="text-2xl font-bold mb-8 text-center">My Journey</h3>
+            <div className="lg:col-span-8 space-y-8">
+              <h3 className="text-2xl font-bold mb-8">My Journey</h3>
               <div className="relative">
                 <div className="absolute left-8 inset-y-0 w-0.5 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500" />
                 
@@ -300,13 +280,22 @@ export function About() {
                         speed: 1000,
                       }}
                     >
-                      <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${item.color} text-white`}>
-                          {item.duration}
-                        </span>
-                        <span className="text-xs text-gray-400 uppercase tracking-wider">
-                          {item.type}
-                        </span>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                          <img 
+                            src={item.logo} 
+                            alt={`${item.title} logo`}
+                            className="w-12 h-12 object-contain rounded-lg bg-white/10 p-2"
+                          />
+                          <div>
+                            <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${item.color} text-white`}>
+                              {item.duration}
+                            </span>
+                            <span className="ml-2 text-xs text-gray-400 uppercase tracking-wider">
+                              {item.type}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       
                       <h4 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">
@@ -316,7 +305,7 @@ export function About() {
                       <p className="text-lg text-blue-300 italic mb-4">"{item.story}"</p>
                       <p className="text-gray-300 mb-4">{item.description}</p>
                       
-                      <ul className="space-y-2">
+                      <ul className="space-y-2 mb-4">
                         {item.details.map((detail, detailIndex) => (
                           <li key={detailIndex} className="text-sm text-gray-400 flex items-start gap-2">
                             <span className="text-blue-400 mt-1">•</span>
@@ -324,6 +313,19 @@ export function About() {
                           </li>
                         ))}
                       </ul>
+
+                      {item.technologies && (
+                        <div className="flex flex-wrap gap-3 mt-4">
+                          {item.technologies.map((tech, techIndex) => (
+                            <img
+                              key={techIndex}
+                              src={`https://cdn.simpleicons.org/${tech}`}
+                              alt={tech}
+                              className="w-6 h-6 opacity-70 hover:opacity-100 transition-opacity"
+                            />
+                          ))}
+                        </div>
+                      )}
 
                       <motion.div
                         className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
