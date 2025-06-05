@@ -28,7 +28,7 @@ export function Hero() {
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden">
       {/* Custom Aurora Text CSS */}
-      <style jsx>{`
+      <style>{`
         @keyframes aurora {
           0%, 100% {
             background-position: 0% 50%;

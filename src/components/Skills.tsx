@@ -1,93 +1,153 @@
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-// IconCloud Component
+// IconCloud Component amélioré
 interface IconCloudProps {
-  images: string[];
+  skills: Array<{
+    name: string;
+    slug: string;
+    category: string;
+    image: string;
+  }>;
 }
 
-function IconCloud({ images }: IconCloudProps) {
-  const [isHovered, setIsHovered] = useState(false);
+function IconCloud({ skills }: IconCloudProps) {
+  const [isGlobalHovered, setIsGlobalHovered] = useState(false);
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+
+  const categoryColors = {
+    languages: "from-blue-500 to-cyan-500",
+    frameworks: "from-green-500 to-emerald-500", 
+    databases: "from-purple-500 to-violet-500",
+    devops: "from-orange-500 to-red-500",
+    tools: "from-yellow-500 to-amber-500",
+  };
 
   return (
-    <div 
-      className="relative w-96 h-96 mx-auto perspective-1000"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <motion.div
-        className="relative w-full h-full preserve-3d"
-        animate={{
-          rotateY: isHovered ? 45 : 360,
-          rotateX: isHovered ? 10 : 15,
-        }}
-        transition={{
-          duration: isHovered ? 2 : 25,
-          ease: "linear",
-          repeat: isHovered ? 0 : Infinity,
-        }}
-        style={{
-          transformStyle: "preserve-3d",
+    <div className="relative w-full max-w-2xl mx-auto">
+      {/* Skill name display */}
+      <motion.div 
+        className="absolute -top-16 left-1/2 transform -translate-x-1/2 z-30"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: hoveredSkill ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <div className="bg-black/80 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20">
+          <p className="text-white font-semibold text-lg">{hoveredSkill}</p>
+        </div>
+      </motion.div>
+
+      <div 
+        className="relative w-[500px] h-[500px] mx-auto skills-3d-container"
+        onMouseEnter={() => setIsGlobalHovered(true)}
+        onMouseLeave={() => {
+          setIsGlobalHovered(false);
+          setHoveredSkill(null);
         }}
       >
-        {images.map((src, index) => {
-          const total = images.length;
-          const phi = Math.acos(-1 + (2 * index) / total);
-          const theta = Math.sqrt(total * Math.PI) * phi;
-          const radius = 160;
-          
-          const x = radius * Math.cos(theta) * Math.sin(phi);
-          const y = radius * Math.sin(theta) * Math.sin(phi);
-          const z = radius * Math.cos(phi);
+        <motion.div
+          className="relative w-full h-full skills-3d-sphere"
+          animate={{
+            rotateY: isGlobalHovered ? 0 : 360,
+            rotateX: isGlobalHovered ? 0 : 10,
+          }}
+          transition={{
+            duration: isGlobalHovered ? 1 : 30,
+            ease: "linear",
+            repeat: isGlobalHovered ? 0 : Infinity,
+          }}
+        >
+        
+          {skills.map((skill, index) => {
+            const total = skills.length;
+            const phi = Math.acos(-1 + (2 * index) / total);
+            const theta = Math.sqrt(total * Math.PI) * phi;
+            const radius = 180;
+            
+            const x = radius * Math.cos(theta) * Math.sin(phi);
+            const y = radius * Math.sin(theta) * Math.sin(phi);
+            const z = radius * Math.cos(phi);
 
-          return (
-            <motion.div
-              key={index}
-              className="absolute w-12 h-12 flex items-center justify-center"
-              style={{
-                transform: `translate3d(${x}px, ${y}px, ${z}px)`,
-                transformStyle: "preserve-3d",
-              }}
-              whileHover={{
-                scale: 1.5,
-                z: 100,
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-              }}
-            >
-              <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <img
-                  src={src}
-                  alt={`Technology ${index}`}
-                  className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 relative z-10 rounded-lg bg-white/10 p-1"
-                  style={{
-                    filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.6))',
-                  }}
-                />
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
-      
-      {/* Center glow effect */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-40 h-40 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-3xl animate-pulse" />
+            return (
+              <motion.div
+                key={skill.slug}
+                className="absolute w-16 h-16 flex items-center justify-center cursor-pointer skills-3d-item"
+                style={{
+                  transform: `translate3d(${x}px, ${y}px, ${z}px)`,
+                  left: '50%',
+                  top: '50%',
+                  marginLeft: '-32px',
+                  marginTop: '-32px',
+                }}
+                onMouseEnter={() => setHoveredSkill(skill.name)}
+                onMouseLeave={() => setHoveredSkill(null)}
+                whileHover={{
+                  scale: 1.3,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <div className="relative group w-full h-full">
+                  {/* Glow effect basé sur la catégorie */}
+                  <div 
+                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-300`}
+                    style={{ transform: 'scale(1.2)' }}
+                  />
+                  
+                  {/* Icône container avec effet 3D */}
+                  <div
+                    className="relative z-10 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-all duration-300 mx-auto"
+                    style={{
+                      transform: hoveredSkill === skill.name ? 'translateZ(20px)' : 'translateZ(0px)',
+                      transition: 'transform 0.3s ease',
+                    }}
+                  >
+                    <img
+                      src={skill.image}
+                      alt={skill.name}
+                      className="w-8 h-8 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
+                      style={{
+                        filter: 'drop-shadow(0 0 15px rgba(59, 130, 246, 0.4))',
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Indicateur de catégorie */}
+                  <div 
+                    className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-full opacity-60`} 
+                  />
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+        
+        {/* Centre lumineux amélioré */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div 
+            className="w-32 h-32 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-pink-500/20 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        </div>
       </div>
-      
-      <style jsx>{`
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-        .preserve-3d {
-          transform-style: preserve-3d;
-        }
-      `}</style>
+
+      {/* Légende des catégories */}
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
+        {Object.entries(categoryColors).map(([category, colors]) => (
+          <div key={category} className="flex items-center gap-2">
+            <div className={`w-3 h-3 bg-gradient-to-r ${colors} rounded-full`} />
+            <span className="text-sm text-gray-300 capitalize">{category}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -98,98 +158,119 @@ export function Skills() {
     threshold: 0.1,
   });
 
-  const techSlugs = [
-    "java",
-    "csharp", 
-    "cplusplus",
-    "python",
-    "javascript",
-    "typescript",
-    "html5",
-    "css3",
-    "react",
-    "angular",
-    "springboot",
-    "dotnet",
-    "django",
-    "nodejs",
-    "mysql",
-    "oracle",
-    "postgresql",
-    "mongodb",
-    "microsoftsqlserver",
-    "docker",
-    "kubernetes",
-    "amazonaws",
-    "microsoftazure",
-    "git",
-    "github",
-    "linux",
-    "windows",
-    "visualstudiocode",
-    "intellijidea",
-    "figma",
-    "postman",
-    "nginx",
-    "redis",
-    "elasticsearch"
+  // Compétences basées sur le CV de Haitham El Abdioui
+  const skills = [
+    // Langages de programmation
+    { name: "Java", slug: "java", category: "languages" },
+    { name: "C#", slug: "csharp", category: "languages" },
+    { name: "C++", slug: "cplusplus", category: "languages" },
+    { name: "Python", slug: "python", category: "languages" },
+    { name: "JavaScript", slug: "javascript", category: "languages" },
+    { name: "TypeScript", slug: "typescript", category: "languages" },
+    
+    // Frameworks
+    { name: "Spring Boot", slug: "springboot", category: "frameworks" },
+    { name: "ASP.NET", slug: "dotnet", category: "frameworks" },
+    { name: "Django", slug: "django", category: "frameworks" },
+    { name: "Angular", slug: "angular", category: "frameworks" },
+    { name: "React", slug: "react", category: "frameworks" },
+    
+    // Bases de données
+    { name: "MySQL", slug: "mysql", category: "databases" },
+    { name: "Oracle", slug: "oracle", category: "databases" },
+    { name: "PostgreSQL", slug: "postgresql", category: "databases" },
+    { name: "SQL Server", slug: "microsoftsqlserver", category: "databases" },
+    { name: "MongoDB", slug: "mongodb", category: "databases" },
+    
+    // Cloud & DevOps
+    { name: "Docker", slug: "docker", category: "devops" },
+    { name: "AWS", slug: "amazonaws", category: "devops" },
+    { name: "Azure", slug: "microsoftazure", category: "devops" },
+    { name: "Linux", slug: "linux", category: "devops" },
+    { name: "Git", slug: "git", category: "devops" },
+    { name: "GitHub", slug: "github", category: "devops" },
+    
+    // Tools
+    { name: "VS Code", slug: "visualstudiocode", category: "tools" },
+    { name: "IntelliJ", slug: "intellijidea", category: "tools" },
+    { name: "Postman", slug: "postman", category: "tools" },
   ];
 
-  const techImages = techSlugs.map(
-    (slug) => `https://cdn.simpleicons.org/${slug}`
-  );
+  const techImages = skills.map(skill => ({
+    ...skill,
+    image: `https://cdn.simpleicons.org/${skill.slug}`,
+  }));
 
   return (
-    <section id="skills" className="min-h-screen py-20 bg-[#0B1120] relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+    <>
+      {/* CSS Global pour la 3D */}
+      <style  >{`
+        .skills-3d-container {
+          perspective: 1200px;
+          perspective-origin: center center;
+        }
+        .skills-3d-sphere {
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+        }
+        .skills-3d-item {
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+        }
+      `}</style>
+
+      <section id="skills" className="min-h-screen py-20 bg-[#0B1120] relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          {[...Array(100)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute bg-white rounded-full"
+              style={{
+                width: Math.random() * 2 + 1,
+                height: Math.random() * 2 + 1,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.5 + 0.3,
+              }}
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: Math.random() * 3 + 2,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            key={i}
-            className="absolute bg-white rounded-full"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.3,
-            }}
-            animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
-      </div>
+            ref={ref}
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h2 className="text-5xl font-bold mb-8">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Technical Skills
+              </span>
+            </h2>
+            
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-16">
+              Explorez mes compétences techniques à travers cette sphère interactive. 
+              Survolez les icônes pour découvrir chaque technologie que je maîtrise.
+            </p>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <h2 className="text-5xl font-bold mb-8">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-              Technical Skills
-            </span>
-          </h2>
-          
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-16">
-            A showcase of the technologies I work with, from programming languages to development tools.
-          </p>
-
-          <div className="flex justify-center items-center min-h-[600px]">
-            <IconCloud images={techImages} />
-          </div>
-        </motion.div>
-      </div>
-    </section>
+            <div className="flex justify-center items-center min-h-[700px]">
+              <IconCloud skills={techImages} />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </>
   );
 }
