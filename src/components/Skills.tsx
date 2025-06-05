@@ -38,11 +38,7 @@ function IconCloud({ skills }: IconCloudProps) {
       </motion.div>
 
       <div 
-        className="relative w-[500px] h-[500px] mx-auto"
-        style={{
-          perspective: '1200px',
-          transformStyle: 'preserve-3d',
-        }}
+        className="relative w-[500px] h-[500px] mx-auto skills-3d-container"
         onMouseEnter={() => setIsGlobalHovered(true)}
         onMouseLeave={() => {
           setIsGlobalHovered(false);
@@ -50,96 +46,98 @@ function IconCloud({ skills }: IconCloudProps) {
         }}
       >
         <motion.div
-          className="relative w-full h-full"
-          style={{
-            transformStyle: 'preserve-3d',
-            transform: 'rotateX(20deg)',
-          }}
+          className="relative w-full h-full skills-3d-sphere"
           animate={{
-            rotateY: isGlobalHovered ? [0, 360] : [0, 360],
+            rotateY: isGlobalHovered ? 0 : 360,
+            rotateX: isGlobalHovered ? 0 : 10,
           }}
           transition={{
-            duration: isGlobalHovered ? 20 : 30,
+            duration: isGlobalHovered ? 1 : 30,
             ease: "linear",
-            repeat: Infinity,
+            repeat: isGlobalHovered ? 0 : Infinity,
           }}
         >
           {skills.map((skill, index) => {
             const total = skills.length;
             const phi = Math.acos(-1 + (2 * index) / total);
             const theta = Math.sqrt(total * Math.PI) * phi;
-            const radius = 200;
+            const radius = 180;
             
             const x = radius * Math.cos(theta) * Math.sin(phi);
             const y = radius * Math.sin(theta) * Math.sin(phi);
             const z = radius * Math.cos(phi);
 
-            const transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${theta}rad) rotateX(${phi}rad)`;
-
             return (
               <motion.div
                 key={skill.slug}
-                className="absolute w-16 h-16"
+                className="absolute w-16 h-16 flex items-center justify-center cursor-pointer skills-3d-item"
                 style={{
-                  transform,
-                  transformStyle: 'preserve-3d',
-                  backfaceVisibility: 'visible',
+                  transform: `translate3d(${x}px, ${y}px, ${z}px)`,
                   left: '50%',
                   top: '50%',
                   marginLeft: '-32px',
                   marginTop: '-32px',
                 }}
+                onMouseEnter={() => setHoveredSkill(skill.name)}
+                onMouseLeave={() => setHoveredSkill(null)}
                 whileHover={{
-                  scale: 1.2,
-                  transition: { duration: 0.2 },
+                  scale: 1.3,
+                  transition: { duration: 0.2 }
                 }}
               >
-                <motion.div
-                  className="w-full h-full cursor-pointer"
-                  style={{ transformStyle: 'preserve-3d' }}
-                  onMouseEnter={() => setHoveredSkill(skill.name)}
-                  onMouseLeave={() => setHoveredSkill(null)}
-                >
-                  {/* Glow effect */}
-                  <motion.div 
-                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-xl opacity-0`}
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 0.6 }}
-                    style={{ 
-                      filter: 'blur(8px)',
-                      transform: 'scale(1.2) translateZ(0)',
-                    }}
+                <div className="relative group w-full h-full">
+                  {/* Glow effect based on category */}
+                  <div 
+                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-xl blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-300`}
+                    style={{ transform: 'scale(1.2)' }}
                   />
                   
-                  {/* Icon container */}
-                  <motion.div 
-                    className="relative w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center"
+                  {/* Icon container with 3D effect */}
+                  <div
+                    className="relative z-10 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-all duration-300 mx-auto"
                     style={{
-                      transform: 'translateZ(20px)',
-                    }}
-                    whileHover={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                      borderColor: 'rgba(255, 255, 255, 0.4)',
+                      transform: hoveredSkill === skill.name ? 'translateZ(20px)' : 'translateZ(0px)',
+                      transition: 'transform 0.3s ease',
                     }}
                   >
                     <img
                       src={skill.image}
                       alt={skill.name}
-                      className="w-8 h-8 object-contain"
+                      className="w-8 h-8 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
                       style={{
-                        filter: 'brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.3))',
-                        transform: 'translateZ(0)',
+                        filter: 'drop-shadow(0 0 15px rgba(59, 130, 246, 0.4))',
                       }}
                     />
-                  </motion.div>
-                </motion.div>
+                  </div>
+                  
+                  {/* Category indicator */}
+                  <div 
+                    className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-full opacity-60`} 
+                  />
+                </div>
               </motion.div>
             );
           })}
         </motion.div>
+        
+        {/* Luminous center */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div 
+            className="w-32 h-32 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-pink-500/20 rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        </div>
       </div>
 
-      {/* Category Legend */}
+      {/* Category legend */}
       <div className="mt-8 flex flex-wrap justify-center gap-4">
         {Object.entries(categoryColors).map(([category, colors]) => (
           <div key={category} className="flex items-center gap-2">
@@ -201,57 +199,75 @@ export function Skills() {
   }));
 
   return (
-    <section id="skills" className="min-h-screen py-20 bg-[#0B1120] relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+    <>
+      {/* CSS Global for 3D */}
+      <style>{`
+        .skills-3d-container {
+          perspective: 1200px;
+          perspective-origin: center center;
+        }
+        .skills-3d-sphere {
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+        }
+        .skills-3d-item {
+          transform-style: preserve-3d;
+          backface-visibility: visible;
+        }
+      `}</style>
+
+      <section id="skills" className="min-h-screen py-20 bg-[#0B1120] relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          {[...Array(100)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute bg-white rounded-full"
+              style={{
+                width: Math.random() * 2 + 1,
+                height: Math.random() * 2 + 1,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: Math.random() * 0.5 + 0.3,
+              }}
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: Math.random() * 3 + 2,
+                repeat: Infinity,
+                repeatType: "reverse",
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            key={i}
-            className="absolute bg-white rounded-full"
-            style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.3,
-            }}
-            animate={{
-              scale: [1, 1.5, 1],
-              opacity: [0.3, 0.8, 0.3],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
-          />
-        ))}
-      </div>
+            ref={ref}
+            initial={{ opacity: 0, y: 50 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-center"
+          >
+            <h2 className="text-5xl font-bold mb-8">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
+                Technical Skills
+              </span>
+            </h2>
+            
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-16">
+              Explore my technical skills through this interactive sphere. 
+              Hover over the icons to discover each technology I master.
+            </p>
 
-      <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <h2 className="text-5xl font-bold mb-8">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">
-              Technical Skills
-            </span>
-          </h2>
-          
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-16">
-            Explore my technical skills through this interactive sphere. 
-            Hover over the icons to discover each technology I master.
-          </p>
-
-          <div className="flex justify-center items-center min-h-[700px]">
-            <IconCloud skills={techImages} />
-          </div>
-        </motion.div>
-      </div>
-    </section>
+            <div className="flex justify-center items-center min-h-[700px]">
+              <IconCloud skills={techImages} />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    </>
   );
 }
