@@ -1,8 +1,5 @@
 import { motion } from 'framer-motion';
-import { 
-  Camera, Code, Soccer, Gamepad, GraduationCap, 
-  Briefcase, Award, Users, Calendar, MapPin, Globe, History, Plane, TrendingUp
-} from 'lucide-react';
+import { Camera, Code, Percent as Soccer, Gamepad, GraduationCap, Briefcase, Award, Users, Calendar, MapPin, Globe, History, Plane, TrendingUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Tilt } from 'react-tilt';
 
@@ -472,5 +469,3 @@ export function About() {
     </section>
   );
 }
-
-export { About }
