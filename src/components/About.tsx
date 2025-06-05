@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { 
-  Camera, Code, Coffee, Gamepad, GraduationCap, Music, 
-  Briefcase, Award, Users, Calendar, MapPin, Globe
+  Camera, Code, Soccer, Gamepad, GraduationCap, 
+  Briefcase, Award, Users, Calendar, MapPin, Globe, History, Plane, TrendingUp
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Tilt } from 'react-tilt';
@@ -126,11 +126,31 @@ export function About() {
   ];
 
   const hobbies = [
-    { icon: <Code className="w-6 h-6" />, label: 'Open Source', description: 'Contributing to open source projects and learning new technologies' },
-    { icon: <Music className="w-6 h-6" />, label: 'Music Production', description: 'Creating electronic music and sound design' },
-    { icon: <Camera className="w-6 h-6" />, label: 'Photography', description: 'Capturing architectural and nature photography' },
-    { icon: <Gamepad className="w-6 h-6" />, label: 'Gaming', description: 'Strategy games and competitive programming challenges' },
-    { icon: <Coffee className="w-6 h-6" />, label: 'Coffee Culture', description: 'Exploring different brewing methods and coffee origins' },
+    { 
+      icon: <Soccer className="w-6 h-6" />, 
+      label: 'Football', 
+      description: 'Playing and watching football matches with friends'
+    },
+    { 
+      icon: <Gamepad className="w-6 h-6" />, 
+      label: 'Gaming', 
+      description: 'Enjoying competitive gaming and esports'
+    },
+    { 
+      icon: <Plane className="w-6 h-6" />, 
+      label: 'Travelling', 
+      description: 'Exploring new cultures and destinations'
+    },
+    { 
+      icon: <History className="w-6 h-6" />, 
+      label: 'History', 
+      description: 'Learning about world history and civilizations'
+    },
+    { 
+      icon: <TrendingUp className="w-6 h-6" />, 
+      label: 'Trading', 
+      description: 'Following markets and trading strategies'
+    },
   ];
 
   return (
@@ -452,3 +472,5 @@ export function About() {
     </section>
   );
 }
+
+export { About }
