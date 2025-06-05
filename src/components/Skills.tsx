@@ -40,7 +40,8 @@ function IconCloud({ skills }: IconCloudProps) {
       <div 
         className="relative w-[500px] h-[500px] mx-auto"
         style={{
-          perspective: '1000px',
+          perspective: '1200px',
+          transformStyle: 'preserve-3d',
         }}
         onMouseEnter={() => setIsGlobalHovered(true)}
         onMouseLeave={() => {
@@ -73,22 +74,24 @@ function IconCloud({ skills }: IconCloudProps) {
             const y = radius * Math.sin(theta) * Math.sin(phi);
             const z = radius * Math.cos(phi);
 
+            const transform = `translate3d(${x}px, ${y}px, ${z}px) rotateY(${theta}rad) rotateX(${phi}rad)`;
+
             return (
               <motion.div
                 key={skill.slug}
                 className="absolute w-16 h-16"
                 style={{
-                  transform: `translate3d(${x}px, ${y}px, ${z}px)`,
+                  transform,
                   transformStyle: 'preserve-3d',
+                  backfaceVisibility: 'visible',
                   left: '50%',
                   top: '50%',
                   marginLeft: '-32px',
                   marginTop: '-32px',
                 }}
-                initial={false}
                 whileHover={{
                   scale: 1.2,
-                  z: z + 50, // Push forward slightly on hover without changing x/y position
+                  transition: { duration: 0.2 },
                 }}
               >
                 <motion.div
@@ -104,13 +107,16 @@ function IconCloud({ skills }: IconCloudProps) {
                     whileHover={{ opacity: 0.6 }}
                     style={{ 
                       filter: 'blur(8px)',
-                      transform: 'scale(1.2)',
+                      transform: 'scale(1.2) translateZ(0)',
                     }}
                   />
                   
                   {/* Icon container */}
                   <motion.div 
                     className="relative w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center"
+                    style={{
+                      transform: 'translateZ(20px)',
+                    }}
                     whileHover={{
                       backgroundColor: 'rgba(255, 255, 255, 0.2)',
                       borderColor: 'rgba(255, 255, 255, 0.4)',
@@ -122,6 +128,7 @@ function IconCloud({ skills }: IconCloudProps) {
                       className="w-8 h-8 object-contain"
                       style={{
                         filter: 'brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.3))',
+                        transform: 'translateZ(0)',
                       }}
                     />
                   </motion.div>
