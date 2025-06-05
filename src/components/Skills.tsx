@@ -41,7 +41,6 @@ function IconCloud({ skills }: IconCloudProps) {
         className="relative w-[500px] h-[500px] mx-auto"
         style={{
           perspective: '1000px',
-          transformStyle: 'preserve-3d',
         }}
         onMouseEnter={() => setIsGlobalHovered(true)}
         onMouseLeave={() => {
@@ -86,9 +85,10 @@ function IconCloud({ skills }: IconCloudProps) {
                   marginLeft: '-32px',
                   marginTop: '-32px',
                 }}
+                initial={false}
                 whileHover={{
                   scale: 1.2,
-                  zIndex: 10,
+                  z: z + 50, // Push forward slightly on hover without changing x/y position
                 }}
               >
                 <motion.div
@@ -97,9 +97,25 @@ function IconCloud({ skills }: IconCloudProps) {
                   onMouseEnter={() => setHoveredSkill(skill.name)}
                   onMouseLeave={() => setHoveredSkill(null)}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-xl opacity-0 group-hover:opacity-60 blur-lg transition-opacity duration-300`} />
+                  {/* Glow effect */}
+                  <motion.div 
+                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-xl opacity-0`}
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 0.6 }}
+                    style={{ 
+                      filter: 'blur(8px)',
+                      transform: 'scale(1.2)',
+                    }}
+                  />
                   
-                  <div className="relative w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all duration-300 transform-gpu hover:scale-110">
+                  {/* Icon container */}
+                  <motion.div 
+                    className="relative w-14 h-14 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 flex items-center justify-center"
+                    whileHover={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderColor: 'rgba(255, 255, 255, 0.4)',
+                    }}
+                  >
                     <img
                       src={skill.image}
                       alt={skill.name}
@@ -108,7 +124,7 @@ function IconCloud({ skills }: IconCloudProps) {
                         filter: 'brightness(1.2) drop-shadow(0 0 10px rgba(255,255,255,0.3))',
                       }}
                     />
-                  </div>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             );
