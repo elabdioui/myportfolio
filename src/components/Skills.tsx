@@ -48,7 +48,7 @@ function IconCloud({ skills }: IconCloudProps) {
       }
     };
 
-    if (isGlobalHovered && containerRef.current) {
+    if (containerRef.current) {
       containerRef.current.addEventListener('mousemove', handleMouseMove);
     }
 
@@ -57,16 +57,16 @@ function IconCloud({ skills }: IconCloudProps) {
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
       }
     };
-  }, [isGlobalHovered]);
+  }, []);
 
   return (
     <div className="relative w-full max-w-3xl mx-auto">
-      {/* Skill Tooltip */}
+      {/* Skill Tooltip - Fixed positioning to avoid interference */}
       <motion.div 
-        className="absolute z-30 pointer-events-none"
+        className="fixed z-50 pointer-events-none"
         style={{
-          left: mousePosition.x,
-          top: mousePosition.y - 80,
+          left: mousePosition.x + (containerRef.current?.getBoundingClientRect().left || 0) + 20,
+          top: mousePosition.y + (containerRef.current?.getBoundingClientRect().top || 0) - 100,
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ 
@@ -76,7 +76,7 @@ function IconCloud({ skills }: IconCloudProps) {
         transition={{ duration: 0.2 }}
       >
         {hoveredSkill && (
-          <div className="bg-black/90 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl">
+          <div className="bg-black/95 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl max-w-xs">
             <div className="flex items-center gap-3 mb-2">
               <div className={`p-1 bg-gradient-to-r ${categoryColors[hoveredSkill.category as keyof typeof categoryColors]} rounded-md`}>
                 {categoryIcons[hoveredSkill.category as keyof typeof categoryIcons]}
@@ -136,6 +136,8 @@ function IconCloud({ skills }: IconCloudProps) {
             const y = radius * Math.sin(theta) * Math.sin(phi);
             const z = radius * Math.cos(phi);
 
+            const isHovered = hoveredSkill?.slug === skill.slug;
+
             return (
               <motion.div
                 key={skill.slug}
@@ -148,7 +150,14 @@ function IconCloud({ skills }: IconCloudProps) {
                   marginTop: '-40px',
                 }}
                 onMouseEnter={() => setHoveredSkill(skill)}
-                onMouseLeave={() => setHoveredSkill(null)}
+                onMouseLeave={() => {
+                  // Add a small delay to prevent flickering
+                  setTimeout(() => {
+                    if (hoveredSkill?.slug === skill.slug) {
+                      setHoveredSkill(null);
+                    }
+                  }, 100);
+                }}
                 whileHover={{
                   scale: 1.4,
                   transition: { duration: 0.2 }
@@ -157,20 +166,22 @@ function IconCloud({ skills }: IconCloudProps) {
                 <div className="relative group w-full h-full">
                   {/* Glow effect based on category */}
                   <motion.div 
-                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-2xl blur-lg opacity-0 group-hover:opacity-70 transition-opacity duration-300`}
+                    className={`absolute inset-0 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-2xl blur-lg transition-opacity duration-300`}
                     style={{ transform: 'scale(1.3)' }}
                     animate={{
-                      opacity: hoveredSkill?.slug === skill.slug ? 0.7 : 0,
+                      opacity: isHovered ? 0.7 : 0,
                     }}
+                    transition={{ duration: 0.3 }}
                   />
                   
                   {/* Icon container with 3D effect */}
                   <motion.div
                     className="relative z-10 w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-all duration-300 mx-auto shadow-2xl"
-                    style={{
-                      transform: hoveredSkill?.slug === skill.slug ? 'translateZ(30px)' : 'translateZ(0px)',
-                      transition: 'transform 0.3s ease',
+                    animate={{
+                      transform: isHovered ? 'translateZ(30px)' : 'translateZ(0px)',
+                      borderColor: isHovered ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255, 255, 255, 0.2)',
                     }}
+                    transition={{ duration: 0.3 }}
                     whileHover={{
                       rotateY: 360,
                       transition: { duration: 0.6 }
@@ -181,7 +192,9 @@ function IconCloud({ skills }: IconCloudProps) {
                       alt={skill.name}
                       className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
                       style={{
-                        filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))',
+                        filter: isHovered 
+                          ? 'drop-shadow(0 0 25px rgba(59, 130, 246, 0.8)) brightness(120%)' 
+                          : 'drop-shadow(0 0 15px rgba(59, 130, 246, 0.4))',
                       }}
                       onError={(e) => {
                         // Fallback for broken images
@@ -192,14 +205,26 @@ function IconCloud({ skills }: IconCloudProps) {
                   </motion.div>
                   
                   {/* Category indicator */}
-                  <div 
-                    className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-full opacity-70 shadow-lg`} 
+                  <motion.div 
+                    className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-full shadow-lg`}
+                    animate={{
+                      opacity: isHovered ? 1 : 0.7,
+                      scale: isHovered ? 1.2 : 1,
+                    }}
+                    transition={{ duration: 0.3 }}
                   />
 
                   {/* Proficiency indicator */}
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-black/80 rounded-full flex items-center justify-center border border-white/20">
+                  <motion.div 
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-black/80 rounded-full flex items-center justify-center border border-white/20"
+                    animate={{
+                      scale: isHovered ? 1.2 : 1,
+                      borderColor: isHovered ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255, 255, 255, 0.2)',
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <span className="text-xs text-white font-bold">{skill.proficiency}</span>
-                  </div>
+                  </motion.div>
                 </div>
               </motion.div>
             );
