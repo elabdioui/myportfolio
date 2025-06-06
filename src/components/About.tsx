@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import { Camera, Code, Percent as Soccer, Gamepad, GraduationCap, Briefcase, Award, Users, Calendar, MapPin, Globe, History, Plane, TrendingUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { Tilt } from 'react-tilt';
+import { LazyImage } from './LazyImage';
+import { useMemo } from 'react';
 
 export function About() {
   const [ref, inView] = useInView({
@@ -9,7 +11,8 @@ export function About() {
     threshold: 0.1,
   });
 
-  const timeline = [
+  // Memoize static data to prevent recreation
+  const timeline = useMemo(() => [
     {
       year: "2024",
       title: "Software Engineer at OLA-Energy",
@@ -25,7 +28,7 @@ export function About() {
       icon: <Briefcase className="w-5 h-5" />,
       color: "from-green-400 to-emerald-500",
       story: "Leading the digital transformation of LPG distribution systems across Cameroon",
-      logo: "https://www.ola-energy.com/sites/default/files/logo.png"
+      logo: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
     },
     {
       year: "2024",
@@ -41,7 +44,7 @@ export function About() {
       icon: <Code className="w-5 h-5" />,
       color: "from-blue-400 to-cyan-500",
       story: "Transforming manual billing processes into an automated, efficient system",
-      logo: "https://www.sews-cabind.com/images/logo.png"
+      logo: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
     },
     {
       year: "2023",
@@ -56,7 +59,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-purple-400 to-violet-500",
       story: "Mastering the intersection of technology and business management",
-      logo: "https://www.emsi.ma/wp-content/uploads/2019/07/logo-emsi.png",
+      logo: "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
       technologies: ["react", "nodejs", "python", "java", "csharp"]
     },
     {
@@ -72,7 +75,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-indigo-400 to-purple-500",
       story: "Discovering the mathematical foundations of computer science",
-      logo: "https://www.univh1.ma/wp-content/uploads/2018/12/logo.png",
+      logo: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
       technologies: ["python", "java", "matlab"]
     },
     {
@@ -85,20 +88,20 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-pink-400 to-rose-500",
       story: "Where analytical thinking and problem-solving skills were born",
-      logo: "https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+      logo: "https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
     }
-  ];
+  ], []);
 
-  const certifications = [
+  const certifications = useMemo(() => [
     "Oracle Cloud Infrastructure 2024 AI Foundations Associate",
     "Oracle Cloud Infrastructure 2024 Foundations Associate", 
     "Red Hat Enterprise Linux Fundamentals",
     "AWS DevOps Specialist",
     "Microsoft Back-End Developer",
     "Database Systems for Data Scientists"
-  ];
+  ], []);
 
-  const leadership = [
+  const leadership = useMemo(() => [
     {
       title: "Google Developer Group (GDG) Leader",
       role: "Cloud Lead & Media Lead",
@@ -114,15 +117,15 @@ export function About() {
       role: "Technical Contributor",
       description: "Participated in Morocco's RGPH2024 national census project"
     }
-  ];
+  ], []);
 
-  const languages = [
+  const languages = useMemo(() => [
     { name: "Arabic", level: "Native", flag: "🇲🇦" },
     { name: "French", level: "DELF B2", flag: "🇫🇷" },
     { name: "English", level: "Professional", flag: "🇺🇸" }
-  ];
+  ], []);
 
-  const hobbies = [
+  const hobbies = useMemo(() => [
     { 
       icon: <Soccer className="w-6 h-6" />, 
       label: 'Football', 
@@ -148,25 +151,37 @@ export function About() {
       label: 'Trading', 
       description: 'Following markets and trading strategies'
     },
-  ];
+  ], []);
+
+  // Memoize stars to prevent recreation
+  const stars = useMemo(() => 
+    [...Array(50)].map((_, i) => ({
+      id: i,
+      width: Math.random() * 2 + 1,
+      height: Math.random() * 2 + 1,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      opacity: Math.random() * 0.7 + 0.3,
+    })), []
+  );
 
   return (
     <section id="about" className="py-20 bg-[#0B1120] text-white relative overflow-hidden">
-      {/* Stars Background */}
+      {/* Optimized Stars Background */}
       <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+        {stars.map((star) => (
           <motion.div
-            key={i}
+            key={star.id}
             className="absolute bg-white rounded-full"
             style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.7 + 0.3,
+              width: star.width,
+              height: star.height,
+              left: star.left,
+              top: star.top,
+              opacity: star.opacity,
             }}
             animate={{
-              opacity: [0.3, 1, 0.3],
+              opacity: [star.opacity, star.opacity * 1.5, star.opacity],
               scale: [1, 1.2, 1],
             }}
             transition={{
@@ -214,7 +229,7 @@ export function About() {
                   transition={{ duration: 0.8, delay: 0.2 }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-                  <img
+                  <LazyImage
                     src="/src/assets/maphoto.jpg"
                     alt="Profile Photo"
                     className="relative rounded-3xl shadow-2xl w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
@@ -299,7 +314,7 @@ export function About() {
                     >
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-4">
-                          <img 
+                          <LazyImage 
                             src={item.logo} 
                             alt={`${item.title} logo`}
                             className="w-12 h-12 object-contain rounded-lg bg-white/10 p-2"
@@ -334,7 +349,7 @@ export function About() {
                       {item.technologies && (
                         <div className="flex flex-wrap gap-3 mt-4">
                           {item.technologies.map((tech, techIndex) => (
-                            <img
+                            <LazyImage
                               key={techIndex}
                               src={`https://cdn.simpleicons.org/${tech}`}
                               alt={tech}

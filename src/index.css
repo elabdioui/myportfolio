@@ -8,6 +8,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
@@ -18,9 +19,9 @@ body {
   --cursor-color: #000;
 }
 
-/* Custom scrollbar */
+/* Optimized scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -35,18 +36,13 @@ body {
   @apply bg-gradient-to-b from-blue-600 to-purple-600;
 }
 
-/* Add this to your existing src/index.css */
-
-/* Smooth scrolling behavior */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px; /* Accounts for fixed navbar height */
-}
-
 /* Enhanced backdrop blur support */
 @supports (backdrop-filter: blur(20px)) {
   .backdrop-blur-md {
     backdrop-filter: blur(12px);
+  }
+  .backdrop-blur-sm {
+    backdrop-filter: blur(8px);
   }
 }
 
@@ -55,22 +51,50 @@ html {
   .backdrop-blur-md {
     background-color: rgba(0, 0, 0, 0.7);
   }
+  .backdrop-blur-sm {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 }
 
-/* Custom scrollbar to match the theme */
-::-webkit-scrollbar {
-  width: 8px;
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
 }
 
-::-webkit-scrollbar-track {
-  background: #0B1120;
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
-  border-radius: 4px;
+/* Optimize font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #2563eb, #7c3aed);
+/* Optimize image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Preload critical fonts */
+@font-face {
+  font-family: 'Poppins';
+  font-display: swap;
+  src: url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 }

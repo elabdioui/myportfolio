@@ -1,100 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, X, Database, Shield, Code, Zap, Cloud, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
-
-const projects = [
-  {
-    title: "QuantumDesk - Enterprise Ticketing System",
-    description: "Comprehensive ticketing system with automated workflows and enterprise-level scalability",
-    longDescription: "Developed a comprehensive enterprise ticketing system that streamlines IT support operations and enhances customer service delivery. Built with ASP.NET Core MVC using clean architecture with layered design, Entity Framework Core with SQL Server for robust data management, and integrated Identity system for secure authentication and authorization. Features automated ticket assignment workflows, escalation rules, Azure DevOps pipeline integration, Docker containerization, and Azure cloud deployment. Demonstrates expertise in enterprise-level workflow automation, scalable architecture, and modern DevOps practices.",
-    image: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    github: "https://github.com/elabdioui/Ticketing-System",
-    demo: "#",
-    tags: ["ASP.NET Core", "Entity Framework", "SQL Server", "Azure", "Docker", "DevOps"],
-    icon: <Users className="w-6 h-6" />,
-    features: [
-      "Automated ticket assignment and escalation",
-      "Role-based access control with Identity",
-      "Real-time notifications and updates",
-      "Azure cloud deployment with CI/CD",
-      "Docker containerization",
-      "Comprehensive reporting dashboard"
-    ]
-  },
-  {
-    title: "BMekog - Modern E-Commerce Platform",
-    description: "Scalable e-commerce solution built with ASP.NET Core 9.0 and modern web practices",
-    longDescription: "Created a modern e-commerce platform that streamlines online retail operations and enhances customer shopping experience. Built with ASP.NET Core 9.0 using MVC architecture, Entity Framework Core for robust data management, and integrated Identity system for secure user authentication. Features include comprehensive product management, intelligent shopping cart functionality, secure order processing system, and payment integration. Demonstrates expertise in full-stack development, database optimization, security best practices, and scalable web application architecture.",
-    image: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    github: "https://github.com/elabdioui/EcommerceProjectNew",
-    demo: "#",
-    tags: ["ASP.NET Core 9.0", "Entity Framework", "MVC", "Identity", "SQL Server", "Bootstrap"],
-    icon: <Zap className="w-6 h-6" />,
-    features: [
-      "Product catalog with advanced filtering",
-      "Secure user authentication and authorization",
-      "Shopping cart and checkout system",
-      "Order management and tracking",
-      "Admin dashboard for inventory management",
-      "Responsive design with modern UI/UX"
-    ]
-  },
-  {
-    title: "Sinistre - Insurance Claims Management",
-    description: "Enterprise-level insurance claims processing system with automated workflows",
-    longDescription: "Developed a comprehensive insurance claims management system that automates claims processing, client data management, and policy administration for insurance companies. Built with modern web technologies focusing on data integrity, process automation, and intuitive user experience. Features include automated claims workflow, policy management, client portal, document management, and comprehensive reporting. Demonstrates expertise in enterprise-level data management, business process automation, and regulatory compliance in the insurance industry.",
-    image: "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    github: "https://github.com/elabdioui/Sinistre",
-    demo: "#",
-    tags: ["Database Management", "Process Automation", "Web Development", "Business Logic", "Data Security"],
-    icon: <Shield className="w-6 h-6" />,
-    features: [
-      "Automated claims processing workflow",
-      "Policy and client data management",
-      "Document upload and management",
-      "Real-time status tracking",
-      "Compliance reporting and analytics",
-      "Multi-role user access control"
-    ]
-  },
-  {
-    title: "Django Full-Stack Web Application",
-    description: "Comprehensive Django-based project showcasing modern Python web development",
-    longDescription: "Developed a sophisticated Django-based web application that demonstrates full-stack development skills and modern Python web development practices. Built using Django's powerful ORM for database design, integrated admin interface for content management, and scalable MVC architecture. Features include user authentication system, dynamic content management, RESTful API endpoints, and responsive frontend design. Demonstrates expertise in Python web development, database optimization, security best practices, and scalable web application architecture suitable for real-world deployment.",
-    image: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    github: "https://github.com/elabdioui/Django-PFA",
-    demo: "#",
-    tags: ["Django", "Python", "PostgreSQL", "REST API", "Bootstrap", "JavaScript"],
-    icon: <Database className="w-6 h-6" />,
-    features: [
-      "Django ORM for complex database operations",
-      "User authentication and authorization",
-      "Admin interface for content management",
-      "RESTful API development",
-      "Responsive frontend with modern UI",
-      "Scalable MVC architecture"
-    ]
-  },
-  {
-    title: "Python Algorithms & Utilities Collection",
-    description: "Comprehensive Python project demonstrating programming fundamentals and problem-solving",
-    longDescription: "Created a comprehensive collection of Python utilities and algorithms that demonstrates programming fundamentals, algorithm implementation, and data processing capabilities. Features clean code practices, efficient algorithm implementations, and practical automation scripts. Includes data structures, sorting algorithms, search algorithms, and utility functions for various programming challenges. Demonstrates expertise in Python programming, algorithm design, code optimization, and software engineering best practices with focus on maintainable and scalable code architecture.",
-    image: "https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    github: "https://github.com/elabdioui/index.py",
-    demo: "#",
-    tags: ["Python", "Algorithms", "Data Structures", "Automation", "Clean Code"],
-    icon: <Code className="w-6 h-6" />,
-    features: [
-      "Algorithm implementations and optimizations",
-      "Data structure demonstrations",
-      "Automation scripts and utilities",
-      "Clean code practices and documentation",
-      "Performance optimization techniques",
-      "Modular and reusable code architecture"
-    ]
-  }
-];
+import { LazyImage } from './LazyImage';
 
 export function Projects() {
   const [ref, inView] = useInView({
@@ -105,30 +13,138 @@ export function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [filter, setFilter] = useState("All");
 
-  const allTags = ["All", ...new Set(projects.flatMap(p => p.tags))];
+  // Memoize projects data to prevent recreation
+  const projects = useMemo(() => [
+    {
+      title: "QuantumDesk - Enterprise Ticketing System",
+      description: "Comprehensive ticketing system with automated workflows and enterprise-level scalability",
+      longDescription: "Developed a comprehensive enterprise ticketing system that streamlines IT support operations and enhances customer service delivery. Built with ASP.NET Core MVC using clean architecture with layered design, Entity Framework Core with SQL Server for robust data management, and integrated Identity system for secure authentication and authorization. Features automated ticket assignment workflows, escalation rules, Azure DevOps pipeline integration, Docker containerization, and Azure cloud deployment. Demonstrates expertise in enterprise-level workflow automation, scalable architecture, and modern DevOps practices.",
+      image: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+      github: "https://github.com/elabdioui/Ticketing-System",
+      demo: "#",
+      tags: ["ASP.NET Core", "Entity Framework", "SQL Server", "Azure", "Docker", "DevOps"],
+      icon: <Users className="w-6 h-6" />,
+      features: [
+        "Automated ticket assignment and escalation",
+        "Role-based access control with Identity",
+        "Real-time notifications and updates",
+        "Azure cloud deployment with CI/CD",
+        "Docker containerization",
+        "Comprehensive reporting dashboard"
+      ]
+    },
+    {
+      title: "BMekog - Modern E-Commerce Platform",
+      description: "Scalable e-commerce solution built with ASP.NET Core 9.0 and modern web practices",
+      longDescription: "Created a modern e-commerce platform that streamlines online retail operations and enhances customer shopping experience. Built with ASP.NET Core 9.0 using MVC architecture, Entity Framework Core for robust data management, and integrated Identity system for secure user authentication. Features include comprehensive product management, intelligent shopping cart functionality, secure order processing system, and payment integration. Demonstrates expertise in full-stack development, database optimization, security best practices, and scalable web application architecture.",
+      image: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+      github: "https://github.com/elabdioui/EcommerceProjectNew",
+      demo: "#",
+      tags: ["ASP.NET Core 9.0", "Entity Framework", "MVC", "Identity", "SQL Server", "Bootstrap"],
+      icon: <Zap className="w-6 h-6" />,
+      features: [
+        "Product catalog with advanced filtering",
+        "Secure user authentication and authorization",
+        "Shopping cart and checkout system",
+        "Order management and tracking",
+        "Admin dashboard for inventory management",
+        "Responsive design with modern UI/UX"
+      ]
+    },
+    {
+      title: "Sinistre - Insurance Claims Management",
+      description: "Enterprise-level insurance claims processing system with automated workflows",
+      longDescription: "Developed a comprehensive insurance claims management system that automates claims processing, client data management, and policy administration for insurance companies. Built with modern web technologies focusing on data integrity, process automation, and intuitive user experience. Features include automated claims workflow, policy management, client portal, document management, and comprehensive reporting. Demonstrates expertise in enterprise-level data management, business process automation, and regulatory compliance in the insurance industry.",
+      image: "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+      github: "https://github.com/elabdioui/Sinistre",
+      demo: "#",
+      tags: ["Database Management", "Process Automation", "Web Development", "Business Logic", "Data Security"],
+      icon: <Shield className="w-6 h-6" />,
+      features: [
+        "Automated claims processing workflow",
+        "Policy and client data management",
+        "Document upload and management",
+        "Real-time status tracking",
+        "Compliance reporting and analytics",
+        "Multi-role user access control"
+      ]
+    },
+    {
+      title: "Django Full-Stack Web Application",
+      description: "Comprehensive Django-based project showcasing modern Python web development",
+      longDescription: "Developed a sophisticated Django-based web application that demonstrates full-stack development skills and modern Python web development practices. Built using Django's powerful ORM for database design, integrated admin interface for content management, and scalable MVC architecture. Features include user authentication system, dynamic content management, RESTful API endpoints, and responsive frontend design. Demonstrates expertise in Python web development, database optimization, security best practices, and scalable web application architecture suitable for real-world deployment.",
+      image: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+      github: "https://github.com/elabdioui/Django-PFA",
+      demo: "#",
+      tags: ["Django", "Python", "PostgreSQL", "REST API", "Bootstrap", "JavaScript"],
+      icon: <Database className="w-6 h-6" />,
+      features: [
+        "Django ORM for complex database operations",
+        "User authentication and authorization",
+        "Admin interface for content management",
+        "RESTful API development",
+        "Responsive frontend with modern UI",
+        "Scalable MVC architecture"
+      ]
+    },
+    {
+      title: "Python Algorithms & Utilities Collection",
+      description: "Comprehensive Python project demonstrating programming fundamentals and problem-solving",
+      longDescription: "Created a comprehensive collection of Python utilities and algorithms that demonstrates programming fundamentals, algorithm implementation, and data processing capabilities. Features clean code practices, efficient algorithm implementations, and practical automation scripts. Includes data structures, sorting algorithms, search algorithms, and utility functions for various programming challenges. Demonstrates expertise in Python programming, algorithm design, code optimization, and software engineering best practices with focus on maintainable and scalable code architecture.",
+      image: "https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+      github: "https://github.com/elabdioui/index.py",
+      demo: "#",
+      tags: ["Python", "Algorithms", "Data Structures", "Automation", "Clean Code"],
+      icon: <Code className="w-6 h-6" />,
+      features: [
+        "Algorithm implementations and optimizations",
+        "Data structure demonstrations",
+        "Automation scripts and utilities",
+        "Clean code practices and documentation",
+        "Performance optimization techniques",
+        "Modular and reusable code architecture"
+      ]
+    }
+  ], []);
 
-  const filteredProjects = projects.filter(project => 
-    filter === "All" || project.tags.includes(filter)
+  const allTags = useMemo(() => ["All", ...new Set(projects.flatMap(p => p.tags))], [projects]);
+
+  const filteredProjects = useMemo(() => 
+    projects.filter(project => 
+      filter === "All" || project.tags.includes(filter)
+    ), [projects, filter]
+  );
+
+  // Memoize stars to prevent recreation
+  const stars = useMemo(() => 
+    [...Array(50)].map((_, i) => ({
+      id: i,
+      width: Math.random() * 2 + 1,
+      height: Math.random() * 2 + 1,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      opacity: Math.random() * 0.5 + 0.3,
+    })), []
   );
 
   return (
     <section id="projects" className="py-20 bg-[#0B1120] relative overflow-hidden">
-      {/* Animated Stars Background */}
+      {/* Optimized Animated Stars Background */}
       <div className="absolute inset-0">
-        {[...Array(100)].map((_, i) => (
+        {stars.map((star) => (
           <motion.div
-            key={i}
+            key={star.id}
             className="absolute bg-white rounded-full"
             style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              opacity: Math.random() * 0.5 + 0.3,
+              width: star.width,
+              height: star.height,
+              left: star.left,
+              top: star.top,
+              opacity: star.opacity,
             }}
             animate={{
               scale: [1, 1.5, 1],
-              opacity: [0.3, 0.8, 0.3],
+              opacity: [star.opacity, star.opacity * 1.5, star.opacity],
             }}
             transition={{
               duration: Math.random() * 3 + 2,
@@ -195,7 +211,7 @@ export function Projects() {
                 >
                   {/* Project Image */}
                   <div className="relative overflow-hidden">
-                    <img
+                    <LazyImage
                       src={project.image}
                       alt={project.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -300,7 +316,7 @@ export function Projects() {
                   </div>
 
                   {/* Project Image */}
-                  <img
+                  <LazyImage
                     src={selectedProject.image}
                     alt={selectedProject.title}
                     className="w-full h-64 object-cover rounded-xl mb-8"

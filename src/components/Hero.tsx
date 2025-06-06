@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Code2, Github, Linkedin, Download, MapPin } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function Hero() {
   const cursorX = useMotionValue(-100);
@@ -18,6 +18,17 @@ export function Hero() {
     window.addEventListener('mousemove', moveCursor);
     return () => window.removeEventListener('mousemove', moveCursor);
   }, [cursorX, cursorY]);
+
+  // Memoize particles to prevent recreation on every render
+  const particles = useMemo(() => 
+    [...Array(30)].map((_, i) => ({
+      id: i,
+      initialX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+      initialY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+      scale: Math.random() * 0.5 + 0.5,
+      opacity: Math.random() * 0.8 + 0.2,
+    })), []
+  );
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden">
@@ -74,32 +85,26 @@ export function Hero() {
         }}
       />
 
-      {/* Reduced Background Particles for Performance */}
+      {/* Optimized Background Particles */}
       <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
+        {particles.map((particle) => (
           <motion.div
-            key={i}
+            key={particle.id}
             className="absolute h-1 w-1 bg-white rounded-full"
             initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              scale: Math.random() * 0.5 + 0.5,
-              opacity: Math.random() * 0.8 + 0.2,
+              x: particle.initialX,
+              y: particle.initialY,
+              scale: particle.scale,
+              opacity: particle.opacity,
             }}
             animate={{
-              x: [
-                Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-                Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-              ],
-              y: [
-                Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-                Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-              ],
-              scale: [0.5, 1.5, 0.5],
-              opacity: [0.2, 0.8, 0.2],
+              x: [particle.initialX, particle.initialX + Math.random() * 200 - 100],
+              y: [particle.initialY, particle.initialY + Math.random() * 200 - 100],
+              scale: [particle.scale, particle.scale * 1.5, particle.scale],
+              opacity: [particle.opacity, particle.opacity * 1.5, particle.opacity],
             }}
             transition={{
-              duration: Math.random() * 15 + 10,
+              duration: Math.random() * 10 + 15,
               repeat: Infinity,
               repeatType: "reverse",
               ease: "easeInOut",

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Code, Database, Cloud, Settings, Wrench, Star } from 'lucide-react';
+import { LazyImage } from './LazyImage';
 
 interface Skill {
   name: string;
@@ -21,21 +22,21 @@ function IconCloud({ skills }: IconCloudProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const categoryColors = {
+  const categoryColors = useMemo(() => ({
     languages: "from-blue-500 to-cyan-500",
     frameworks: "from-green-500 to-emerald-500", 
     databases: "from-purple-500 to-violet-500",
     devops: "from-orange-500 to-red-500",
     tools: "from-yellow-500 to-amber-500",
-  };
+  }), []);
 
-  const categoryIcons = {
+  const categoryIcons = useMemo(() => ({
     languages: <Code className="w-4 h-4" />,
     frameworks: <Settings className="w-4 h-4" />,
     databases: <Database className="w-4 h-4" />,
     devops: <Cloud className="w-4 h-4" />,
     tools: <Wrench className="w-4 h-4" />,
-  };
+  }), []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -59,9 +60,25 @@ function IconCloud({ skills }: IconCloudProps) {
     };
   }, []);
 
+  // Memoize skill positions to prevent recalculation
+  const skillPositions = useMemo(() => {
+    return skills.map((skill, index) => {
+      const total = skills.length;
+      const phi = Math.acos(-1 + (2 * index) / total);
+      const theta = Math.sqrt(total * Math.PI) * phi;
+      const radius = 220;
+      
+      const x = radius * Math.cos(theta) * Math.sin(phi);
+      const y = radius * Math.sin(theta) * Math.sin(phi);
+      const z = radius * Math.cos(phi);
+
+      return { skill, x, y, z };
+    });
+  }, [skills]);
+
   return (
     <div className="relative w-full max-w-3xl mx-auto">
-      {/* Skill Tooltip - Fixed positioning to avoid interference */}
+      {/* Skill Tooltip */}
       <motion.div 
         className="fixed z-50 pointer-events-none"
         style={{
@@ -126,16 +143,7 @@ function IconCloud({ skills }: IconCloudProps) {
             repeat: isGlobalHovered ? 0 : Infinity,
           }}
         >
-          {skills.map((skill, index) => {
-            const total = skills.length;
-            const phi = Math.acos(-1 + (2 * index) / total);
-            const theta = Math.sqrt(total * Math.PI) * phi;
-            const radius = 220;
-            
-            const x = radius * Math.cos(theta) * Math.sin(phi);
-            const y = radius * Math.sin(theta) * Math.sin(phi);
-            const z = radius * Math.cos(phi);
-
+          {skillPositions.map(({ skill, x, y, z }, index) => {
             const isHovered = hoveredSkill?.slug === skill.slug;
 
             return (
@@ -151,7 +159,6 @@ function IconCloud({ skills }: IconCloudProps) {
                 }}
                 onMouseEnter={() => setHoveredSkill(skill)}
                 onMouseLeave={() => {
-                  // Add a small delay to prevent flickering
                   setTimeout(() => {
                     if (hoveredSkill?.slug === skill.slug) {
                       setHoveredSkill(null);
@@ -187,20 +194,10 @@ function IconCloud({ skills }: IconCloudProps) {
                       transition: { duration: 0.6 }
                     }}
                   >
-                    <img
+                    <LazyImage
                       src={skill.image}
                       alt={skill.name}
                       className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
-                      style={{
-                        filter: isHovered 
-                          ? 'drop-shadow(0 0 25px rgba(59, 130, 246, 0.8)) brightness(120%)' 
-                          : 'drop-shadow(0 0 15px rgba(59, 130, 246, 0.4))',
-                      }}
-                      onError={(e) => {
-                        // Fallback for broken images
-                        const target = e.target as HTMLImageElement;
-                        target.src = `https://via.placeholder.com/40/4F46E5/FFFFFF?text=${skill.name.charAt(0)}`;
-                      }}
                     />
                   </motion.div>
                   
@@ -323,7 +320,8 @@ export function Skills() {
     threshold: 0.1,
   });
 
-  const skills: Skill[] = [
+  // Memoize skills data to prevent recreation
+  const skills: Skill[] = useMemo(() => [
     // Languages
     { name: "Java", slug: "java", category: "languages", proficiency: 5 },
     { name: "C#", slug: "csharp", category: "languages", proficiency: 5 },
@@ -360,12 +358,24 @@ export function Skills() {
     { name: "IntelliJ", slug: "intellijidea", category: "tools", proficiency: 4 },
     { name: "Postman", slug: "postman", category: "tools", proficiency: 4 },
     { name: "Figma", slug: "figma", category: "tools", proficiency: 3 },
-  ];
+  ], []);
 
-  const techImages = skills.map(skill => ({
+  const techImages = useMemo(() => skills.map(skill => ({
     ...skill,
     image: `https://cdn.simpleicons.org/${skill.slug}`,
-  }));
+  })), [skills]);
+
+  // Memoize stars to prevent recreation
+  const stars = useMemo(() => 
+    [...Array(75)].map((_, i) => ({
+      id: i,
+      width: Math.random() * 3 + 1,
+      height: Math.random() * 3 + 1,
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      opacity: Math.random() * 0.6 + 0.2,
+    })), []
+  );
 
   return (
     <>
@@ -396,22 +406,22 @@ export function Skills() {
       `}</style>
 
       <section id="skills" className="min-h-screen py-20 bg-[#0B1120] relative overflow-hidden">
-        {/* Enhanced Animated Background */}
+        {/* Optimized Animated Background */}
         <div className="absolute inset-0">
-          {[...Array(150)].map((_, i) => (
+          {stars.map((star) => (
             <motion.div
-              key={i}
+              key={star.id}
               className="absolute bg-white rounded-full"
               style={{
-                width: Math.random() * 3 + 1,
-                height: Math.random() * 3 + 1,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: Math.random() * 0.6 + 0.2,
+                width: star.width,
+                height: star.height,
+                left: star.left,
+                top: star.top,
+                opacity: star.opacity,
               }}
               animate={{
                 scale: [1, 1.8, 1],
-                opacity: [0.2, 0.8, 0.2],
+                opacity: [star.opacity, star.opacity * 1.5, star.opacity],
                 x: [0, Math.random() * 100 - 50, 0],
                 y: [0, Math.random() * 100 - 50, 0],
               }}
