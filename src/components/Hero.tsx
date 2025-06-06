@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { Code2, Github, Linkedin, Moon, Sun, Download, MapPin } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Code2, Github, Linkedin, Download, MapPin } from 'lucide-react';
+import { useEffect } from 'react';
 
 export function Hero() {
   const cursorX = useMotionValue(-100);
@@ -8,7 +8,6 @@ export function Hero() {
   const springConfig = { damping: 25, stiffness: 700 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
-  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     const moveCursor = (e: MouseEvent) => {
@@ -20,53 +19,27 @@ export function Hero() {
     return () => window.removeEventListener('mousemove', moveCursor);
   }, [cursorX, cursorY]);
 
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    document.documentElement.classList.toggle('dark');
-  };
-
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden">
-      {/* Custom Aurora Text CSS */}
+      {/* Optimized Aurora Text CSS */}
       <style>{`
         @keyframes aurora {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          25% {
-            background-position: 100% 50%;
-          }
-          50% {
-            background-position: 200% 50%;
-          }
-          75% {
-            background-position: 300% 50%;
-          }
+          0%, 100% { background-position: 0% 50%; }
+          25% { background-position: 100% 50%; }
+          50% { background-position: 200% 50%; }
+          75% { background-position: 300% 50%; }
         }
         
         @keyframes aurora-border {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
         }
         
         .aurora-text {
           background: linear-gradient(
             45deg,
-            #ff6b6b,
-            #4ecdc4,
-            #45b7d1,
-            #96ceb4,
-            #feca57,
-            #ff9ff3,
-            #54a0ff,
-            #5f27cd,
-            #00d2d3,
-            #ff9f43,
-            #ff6b6b
+            #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57,
+            #ff9ff3, #54a0ff, #5f27cd, #00d2d3, #ff9f43, #ff6b6b
           );
           background-size: 400% 400%;
           background-clip: text;
@@ -77,12 +50,7 @@ export function Hero() {
         }
         
         .aurora-border {
-          background: linear-gradient(
-            45deg,
-            #ff6b6b,
-            #54a0ff,
-            #5f27cd
-          );
+          background: linear-gradient(45deg, #ff6b6b, #54a0ff, #5f27cd);
           background-size: 300% 300%;
           animation: aurora-border 50s ease-in-out infinite;
           border-radius: 50px;
@@ -97,7 +65,7 @@ export function Hero() {
         }
       `}</style>
 
-      {/* Custom Cursor */}
+      {/* Optimized Custom Cursor */}
       <motion.div
         className="w-8 h-8 bg-white rounded-full fixed top-0 left-0 pointer-events-none z-50 mix-blend-difference"
         style={{
@@ -106,26 +74,26 @@ export function Hero() {
         }}
       />
 
-      {/* Animated Background Particles */}
+      {/* Reduced Background Particles for Performance */}
       <div className="absolute inset-0">
-        {[...Array(80)].map((_, i) => (
+        {[...Array(50)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute h-1 w-1 bg-white rounded-full"
             initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
               scale: Math.random() * 0.5 + 0.5,
               opacity: Math.random() * 0.8 + 0.2,
             }}
             animate={{
               x: [
-                Math.random() * window.innerWidth,
-                Math.random() * window.innerWidth,
+                Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+                Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
               ],
               y: [
-                Math.random() * window.innerHeight,
-                Math.random() * window.innerHeight,
+                Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+                Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
               ],
               scale: [0.5, 1.5, 0.5],
               opacity: [0.2, 0.8, 0.2],
@@ -139,21 +107,6 @@ export function Hero() {
           />
         ))}
       </div>
-
-      {/* Theme Toggle */}
-      <motion.button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 p-3 bg-white bg-opacity-10 rounded-full backdrop-blur-sm border border-white/20"
-        whileHover={{ scale: 1.1, rotate: 180 }}
-        whileTap={{ scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-      >
-        {isDark ? (
-          <Sun className="w-6 h-6 text-yellow-400" />
-        ) : (
-          <Moon className="w-6 h-6 text-blue-400" />
-        )}
-      </motion.button>
       
       {/* Main Content */}
       <div className="container mx-auto px-4 text-center z-10 max-w-6xl mt-20 md:mt-32">
