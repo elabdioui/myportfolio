@@ -105,17 +105,20 @@ export function About() {
     {
       title: "Google Developer Group (GDG) Leader",
       role: "Cloud Lead & Media Lead",
-      description: "Leading technical workshops and community events on campus"
+      description: "Leading technical workshops and community events on campus",
+      logo: "/src/assets/gdg-logo.png"
     },
     {
       title: "OppotunAI Hackathon",
       role: "Organizing Committee Member", 
-      description: "Coordinated AI-focused hackathon events and mentored participants"
+      description: "Coordinated AI-focused hackathon events and mentored participants",
+      logo: "/src/assets/opportunai-logo.png"
     },
     {
       title: "National Population Census",
       role: "Technical Contributor",
-      description: "Participated in Morocco's RGPH2024 national census project"
+      description: "Participated in Morocco's RGPH2024 national census project",
+      logo: "/src/assets/rgph2024-logo.png"
     }
   ], []);
 
@@ -420,8 +423,14 @@ export function About() {
                     transition={{ duration: 0.3 }}
                   >
                     <div className="flex items-start gap-3 mb-3">
-                      <Users className="w-6 h-6 text-purple-400 mt-1 flex-shrink-0" />
-                      <div>
+                      <div className="w-12 h-12 flex-shrink-0">
+                        <LazyImage 
+                          src={item.logo} 
+                          alt={`${item.title} logo`}
+                          className="w-full h-full object-contain rounded-lg bg-white/5 p-1"
+                        />
+                      </div>
+                      <div className="flex-1">
                         <h4 className="font-semibold group-hover:text-purple-400 transition-colors">{item.title}</h4>
                         <p className="text-sm text-blue-400 mb-2">{item.role}</p>
                       </div>
