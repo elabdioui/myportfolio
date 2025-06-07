@@ -1,10 +1,8 @@
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Code, Database, Cloud, Settings, Wrench, Star } from 'lucide-react';
-
-// Lazy load the LazyImage component
-const LazyImage = lazy(() => import('./LazyImage').then(module => ({ default: module.LazyImage })));
+import { LazyImage } from './LazyImage';
 
 interface Skill {
   name: string;
@@ -18,73 +16,7 @@ interface IconCloudProps {
   skills: Skill[];
 }
 
-const SkillTooltip = memo(({ skill, mousePosition, containerRef }: {
-  skill: Skill | null;
-  mousePosition: { x: number; y: number };
-  containerRef: React.RefObject<HTMLDivElement>;
-}) => {
-  const categoryColors = {
-    languages: "from-blue-500 to-cyan-500",
-    frameworks: "from-green-500 to-emerald-500", 
-    databases: "from-purple-500 to-violet-500",
-    devops: "from-orange-500 to-red-500",
-    tools: "from-yellow-500 to-amber-500",
-  };
-
-  const categoryIcons = {
-    languages: <Code className="w-4 h-4" />,
-    frameworks: <Settings className="w-4 h-4" />,
-    databases: <Database className="w-4 h-4" />,
-    devops: <Cloud className="w-4 h-4" />,
-    tools: <Wrench className="w-4 h-4" />,
-  };
-
-  if (!skill) return null;
-
-  return (
-    <motion.div 
-      className="fixed z-50 pointer-events-none"
-      style={{
-        left: mousePosition.x + (containerRef.current?.getBoundingClientRect().left || 0) + 20,
-        top: mousePosition.y + (containerRef.current?.getBoundingClientRect().top || 0) - 100,
-      }}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.2 }}
-    >
-      <div className="bg-black/95 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl max-w-xs">
-        <div className="flex items-center gap-3 mb-2">
-          <div className={`p-1 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-md`}>
-            {categoryIcons[skill.category as keyof typeof categoryIcons]}
-          </div>
-          <p className="text-white font-semibold text-lg">{skill.name}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-gray-300 text-sm">Proficiency:</span>
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3 h-3 ${
-                  i < skill.proficiency 
-                    ? 'text-yellow-400 fill-current' 
-                    : 'text-gray-600'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-blue-400 text-sm font-medium">
-            {skill.proficiency}/5
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  );
-});
-
-SkillTooltip.displayName = 'SkillTooltip';
-
-const IconCloud = memo(({ skills }: IconCloudProps) => {
+function IconCloud({ skills }: IconCloudProps) {
   const [isGlobalHovered, setIsGlobalHovered] = useState(false);
   const [hoveredSkill, setHoveredSkill] = useState<Skill | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -98,6 +30,14 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
     tools: "from-yellow-500 to-amber-500",
   }), []);
 
+  const categoryIcons = useMemo(() => ({
+    languages: <Code className="w-4 h-4" />,
+    frameworks: <Settings className="w-4 h-4" />,
+    databases: <Database className="w-4 h-4" />,
+    devops: <Cloud className="w-4 h-4" />,
+    tools: <Wrench className="w-4 h-4" />,
+  }), []);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
@@ -109,14 +49,13 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
       }
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove, { passive: true });
+    if (containerRef.current) {
+      containerRef.current.addEventListener('mousemove', handleMouseMove);
     }
 
     return () => {
-      if (container) {
-        container.removeEventListener('mousemove', handleMouseMove);
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('mousemove', handleMouseMove);
       }
     };
   }, []);
@@ -139,11 +78,49 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
 
   return (
     <div className="relative w-full max-w-3xl mx-auto">
-      <SkillTooltip 
-        skill={hoveredSkill} 
-        mousePosition={mousePosition} 
-        containerRef={containerRef} 
-      />
+      {/* Skill Tooltip */}
+      <motion.div 
+        className="fixed z-50 pointer-events-none"
+        style={{
+          left: mousePosition.x + (containerRef.current?.getBoundingClientRect().left || 0) + 20,
+          top: mousePosition.y + (containerRef.current?.getBoundingClientRect().top || 0) - 100,
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ 
+          opacity: hoveredSkill ? 1 : 0,
+          scale: hoveredSkill ? 1 : 0.8,
+        }}
+        transition={{ duration: 0.2 }}
+      >
+        {hoveredSkill && (
+          <div className="bg-black/95 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl max-w-xs">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`p-1 bg-gradient-to-r ${categoryColors[hoveredSkill.category as keyof typeof categoryColors]} rounded-md`}>
+                {categoryIcons[hoveredSkill.category as keyof typeof categoryIcons]}
+              </div>
+              <p className="text-white font-semibold text-lg">{hoveredSkill.name}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-300 text-sm">Proficiency:</span>
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-3 h-3 ${
+                      i < hoveredSkill.proficiency 
+                        ? 'text-yellow-400 fill-current' 
+                        : 'text-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-blue-400 text-sm font-medium">
+                {hoveredSkill.proficiency}/5
+              </span>
+            </div>
+          </div>
+        )}
+      </motion.div>
 
       <div 
         ref={containerRef}
@@ -217,13 +194,11 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
                       transition: { duration: 0.6 }
                     }}
                   >
-                    <Suspense fallback={<div className="w-10 h-10 bg-gray-600 rounded animate-pulse" />}>
-                      <LazyImage
-                        src={skill.image}
-                        alt={skill.name}
-                        className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
-                      />
-                    </Suspense>
+                    <LazyImage
+                      src={skill.image}
+                      alt={skill.name}
+                      className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
+                    />
                   </motion.div>
                   
                   {/* Category indicator */}
@@ -299,14 +274,6 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
           const categorySkills = skills.filter(skill => skill.category === category);
           const avgProficiency = categorySkills.reduce((sum, skill) => sum + skill.proficiency, 0) / categorySkills.length;
           
-          const categoryIcons = {
-            languages: <Code className="w-4 h-4" />,
-            frameworks: <Settings className="w-4 h-4" />,
-            databases: <Database className="w-4 h-4" />,
-            devops: <Cloud className="w-4 h-4" />,
-            tools: <Wrench className="w-4 h-4" />,
-          };
-          
           return (
             <motion.div 
               key={category} 
@@ -345,11 +312,9 @@ const IconCloud = memo(({ skills }: IconCloudProps) => {
       </div>
     </div>
   );
-});
+}
 
-IconCloud.displayName = 'IconCloud';
-
-export const Skills = memo(() => {
+export function Skills() {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -358,51 +323,46 @@ export const Skills = memo(() => {
   // Memoize skills data to prevent recreation
   const skills: Skill[] = useMemo(() => [
     // Languages
-    { name: "Java", slug: "java", category: "languages", proficiency: 5 },
-    { name: "C#", slug: "csharp", category: "languages", proficiency: 5 },
-    { name: "C++", slug: "cplusplus", category: "languages", proficiency: 4 },
-    { name: "Python", slug: "python", category: "languages", proficiency: 5 },
-    { name: "JavaScript", slug: "javascript", category: "languages", proficiency: 5 },
-    { name: "TypeScript", slug: "typescript", category: "languages", proficiency: 4 },
+    { name: "Java", slug: "java", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/java" },
+    { name: "C#", slug: "csharp", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/csharp" },
+    { name: "C++", slug: "cplusplus", category: "languages", proficiency: 4, image: "https://cdn.simpleicons.org/cplusplus" },
+    { name: "Python", slug: "python", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/python" },
+    { name: "JavaScript", slug: "javascript", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/javascript" },
+    { name: "TypeScript", slug: "typescript", category: "languages", proficiency: 4, image: "https://cdn.simpleicons.org/typescript" },
     
     // Frameworks
-    { name: "Spring Boot", slug: "springboot", category: "frameworks", proficiency: 4 },
-    { name: "ASP.NET", slug: "dotnet", category: "frameworks", proficiency: 5 },
-    { name: "Django", slug: "django", category: "frameworks", proficiency: 4 },
-    { name: "Angular", slug: "angular", category: "frameworks", proficiency: 4 },
-    { name: "React", slug: "react", category: "frameworks", proficiency: 5 },
-    { name: "Node.js", slug: "nodedotjs", category: "frameworks", proficiency: 4 },
+    { name: "Spring Boot", slug: "springboot", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/springboot" },
+    { name: "ASP.NET", slug: "dotnet", category: "frameworks", proficiency: 5, image: "https://cdn.simpleicons.org/dotnet" },
+    { name: "Django", slug: "django", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/django" },
+    { name: "Angular", slug: "angular", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/angular" },
+    { name: "React", slug: "react", category: "frameworks", proficiency: 5, image: "https://cdn.simpleicons.org/react" },
+    { name: "Node.js", slug: "nodedotjs", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/nodedotjs" },
     
     // Databases
-    { name: "MySQL", slug: "mysql", category: "databases", proficiency: 5 },
-    { name: "Oracle", slug: "oracle", category: "databases", proficiency: 4 },
-    { name: "PostgreSQL", slug: "postgresql", category: "databases", proficiency: 4 },
-    { name: "SQL Server", slug: "microsoftsqlserver", category: "databases", proficiency: 5 },
-    { name: "MongoDB", slug: "mongodb", category: "databases", proficiency: 4 },
+    { name: "MySQL", slug: "mysql", category: "databases", proficiency: 5, image: "https://cdn.simpleicons.org/mysql" },
+    { name: "Oracle", slug: "oracle", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/oracle" },
+    { name: "PostgreSQL", slug: "postgresql", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/postgresql" },
+    { name: "SQL Server", slug: "microsoftsqlserver", category: "databases", proficiency: 5, image: "https://cdn.simpleicons.org/microsoftsqlserver" },
+    { name: "MongoDB", slug: "mongodb", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/mongodb" },
     
     // DevOps
-    { name: "Docker", slug: "docker", category: "devops", proficiency: 4 },
-    { name: "AWS", slug: "amazonaws", category: "devops", proficiency: 3 },
-    { name: "Azure", slug: "microsoftazure", category: "devops", proficiency: 4 },
-    { name: "Linux", slug: "linux", category: "devops", proficiency: 4 },
-    { name: "Git", slug: "git", category: "devops", proficiency: 5 },
-    { name: "GitHub", slug: "github", category: "devops", proficiency: 5 },
+    { name: "Docker", slug: "docker", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/docker" },
+    { name: "AWS", slug: "amazonaws", category: "devops", proficiency: 3, image: "https://cdn.simpleicons.org/amazonaws" },
+    { name: "Azure", slug: "microsoftazure", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/microsoftazure" },
+    { name: "Linux", slug: "linux", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/linux" },
+    { name: "Git", slug: "git", category: "devops", proficiency: 5, image: "https://cdn.simpleicons.org/git" },
+    { name: "GitHub", slug: "github", category: "devops", proficiency: 5, image: "https://cdn.simpleicons.org/github" },
     
     // Tools
-    { name: "VS Code", slug: "visualstudiocode", category: "tools", proficiency: 5 },
-    { name: "IntelliJ", slug: "intellijidea", category: "tools", proficiency: 4 },
-    { name: "Postman", slug: "postman", category: "tools", proficiency: 4 },
-    { name: "Figma", slug: "figma", category: "tools", proficiency: 3 },
+    { name: "VS Code", slug: "visualstudiocode", category: "tools", proficiency: 5, image: "https://cdn.simpleicons.org/visualstudiocode" },
+    { name: "IntelliJ", slug: "intellijidea", category: "tools", proficiency: 4, image: "https://cdn.simpleicons.org/intellijidea" },
+    { name: "Postman", slug: "postman", category: "tools", proficiency: 4, image: "https://cdn.simpleicons.org/postman" },
+    { name: "Figma", slug: "figma", category: "tools", proficiency: 3, image: "https://cdn.simpleicons.org/figma" },
   ], []);
-
-  const techImages = useMemo(() => skills.map(skill => ({
-    ...skill,
-    image: `https://cdn.simpleicons.org/${skill.slug}`,
-  })), [skills]);
 
   // Memoize stars to prevent recreation
   const stars = useMemo(() => 
-    [...Array(50)].map((_, i) => ({
+    [...Array(75)].map((_, i) => ({
       id: i,
       width: Math.random() * 3 + 1,
       height: Math.random() * 3 + 1,
@@ -507,7 +467,7 @@ export const Skills = memo(() => {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, delay: 0.6 }}
             >
-              <IconCloud skills={techImages} />
+              <IconCloud skills={skills} />
             </motion.div>
 
             {/* Skills Summary */}
@@ -542,6 +502,4 @@ export const Skills = memo(() => {
       </section>
     </>
   );
-});
-
-Skills.displayName = 'Skills';
+}

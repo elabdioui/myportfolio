@@ -1,30 +1,17 @@
-import { lazy, Suspense } from 'react';
-import { Navbar } from './components/Navbar';
+import { About } from './components/About';
+import { Contact } from './components/Contact';
 import { Hero } from './components/Hero';
+import { Navbar } from './components/Navbar';
+import { Projects } from './components/Projects';
 import { ScrollToTop } from './components/ScrollToTop';
-
-// Lazy load components that are not immediately visible
-const About = lazy(() => import('./components/About').then(module => ({ default: module.About })));
-const Projects = lazy(() => import('./components/Projects').then(module => ({ default: module.Projects })));
-const Skills = lazy(() => import('./components/Skills').then(module => ({ default: module.Skills })));
-const Contact = lazy(() => import('./components/Contact').then(module => ({ default: module.Contact })));
-
-// Loading component
-const SectionLoader = () => (
-  <div className="min-h-screen bg-[#0B1120] flex items-center justify-center">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-white/60">Loading...</p>
-    </div>
-  </div>
-);
+import { Skills } from './components/Skills';
 
 function App() {
   return (
     <div className="font-['Poppins'] bg-[#0B1120] relative">
-      {/* Optimized Stars Background - Reduced count */}
+      {/* Animated Stars Background */}
       <div className="fixed inset-0 z-0">
-        {[...Array(50)].map((_, i) => (
+        {[...Array(100)].map((_, i) => (
           <div
             key={i}
             className="absolute bg-white rounded-full"
@@ -44,28 +31,15 @@ function App() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
-        
-        <Suspense fallback={<SectionLoader />}>
-          <About />
-        </Suspense>
-        
-        <Suspense fallback={<SectionLoader />}>
-          <Projects />
-        </Suspense>
-        
-        <Suspense fallback={<SectionLoader />}>
-          <Skills />
-        </Suspense>
-        
-        <Suspense fallback={<SectionLoader />}>
-          <Contact />
-        </Suspense>
-        
+        <About />
+        <Projects />
+        <Skills />
+        <Contact />
         <ScrollToTop />
       </div>
 
       {/* Add animation keyframes */}
-      <style>{`
+      <style >{`
         @keyframes twinkle {
           0% { opacity: 0.3; transform: scale(1); }
           100% { opacity: 0.8; transform: scale(1.5); }
