@@ -28,7 +28,7 @@ export function About() {
       icon: <Briefcase className="w-5 h-5" />,
       color: "from-green-400 to-emerald-500",
       story: "Leading the digital transformation of LPG distribution systems across Cameroon",
-      logo: "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/ola-energy-logo.png"
     },
     {
       year: "2024",
@@ -44,7 +44,7 @@ export function About() {
       icon: <Code className="w-5 h-5" />,
       color: "from-blue-400 to-cyan-500",
       story: "Transforming manual billing processes into an automated, efficient system",
-      logo: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/sews-cabind-logo.png"
     },
     {
       year: "2023",
@@ -59,7 +59,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-purple-400 to-violet-500",
       story: "Mastering the intersection of technology and business management",
-      logo: "https://images.pexels.com/photos/267885/pexels-photo-267885.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
+      logo: "/src/assets/emsi-logo.png",
       technologies: ["react", "nodejs", "python", "java", "csharp"]
     },
     {
@@ -75,7 +75,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-indigo-400 to-purple-500",
       story: "Discovering the mathematical foundations of computer science",
-      logo: "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
+      logo: "/src/assets/fst.png",
       technologies: ["python", "java", "matlab"]
     },
     {
@@ -88,7 +88,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-pink-400 to-rose-500",
       story: "Where analytical thinking and problem-solving skills were born",
-      logo: "https://images.pexels.com/photos/289737/pexels-photo-289737.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/yassamine-school-logo.png"
     }
   ], []);
 
@@ -106,19 +106,19 @@ export function About() {
       title: "Google Developer Group (GDG) Leader",
       role: "Cloud Lead & Media Lead",
       description: "Leading technical workshops and community events on campus",
-      logo: "https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/gdg-logo.png"
     },
     {
       title: "OppotunAI Hackathon",
       role: "Organizing Committee Member", 
       description: "Coordinated AI-focused hackathon events and mentored participants",
-      logo: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/opportunai-logo.png"
     },
     {
       title: "National Population Census",
       role: "Technical Contributor",
       description: "Participated in Morocco's RGPH2024 national census project",
-      logo: "https://images.pexels.com/photos/590016/pexels-photo-590016.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/rgph2024-logo.png"
     }
   ], []);
 
@@ -233,7 +233,7 @@ export function About() {
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
                   <LazyImage
-                    src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&dpr=1"
+                    src="/src/assets/maphoto.jpg"
                     alt="Profile Photo"
                     className="relative rounded-3xl shadow-2xl w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -320,7 +320,7 @@ export function About() {
                           <LazyImage 
                             src={item.logo} 
                             alt={`${item.title} logo`}
-                            className="w-12 h-12 object-cover rounded-lg bg-white/10 p-2"
+                            className="w-12 h-12 object-contain rounded-lg bg-white/10 p-2"
                           />
                           <div>
                             <span className={`px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r ${item.color} text-white`}>
@@ -427,7 +427,7 @@ export function About() {
                         <LazyImage 
                           src={item.logo} 
                           alt={`${item.title} logo`}
-                          className="w-full h-full object-cover rounded-lg bg-white/5 p-1"
+                          className="w-full h-full object-contain rounded-lg bg-white/5 p-1"
                         />
                       </div>
                       <div className="flex-1">
