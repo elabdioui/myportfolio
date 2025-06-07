@@ -323,42 +323,47 @@ export function Skills() {
   // Memoize skills data to prevent recreation
   const skills: Skill[] = useMemo(() => [
     // Languages
-    { name: "Java", slug: "java", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/java" },
-    { name: "C#", slug: "csharp", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/csharp" },
-    { name: "C++", slug: "cplusplus", category: "languages", proficiency: 4, image: "https://cdn.simpleicons.org/cplusplus" },
-    { name: "Python", slug: "python", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/python" },
-    { name: "JavaScript", slug: "javascript", category: "languages", proficiency: 5, image: "https://cdn.simpleicons.org/javascript" },
-    { name: "TypeScript", slug: "typescript", category: "languages", proficiency: 4, image: "https://cdn.simpleicons.org/typescript" },
+    { name: "Java", slug: "java", category: "languages", proficiency: 5 },
+    { name: "C#", slug: "csharp", category: "languages", proficiency: 5 },
+    { name: "C++", slug: "cplusplus", category: "languages", proficiency: 4 },
+    { name: "Python", slug: "python", category: "languages", proficiency: 5 },
+    { name: "JavaScript", slug: "javascript", category: "languages", proficiency: 5 },
+    { name: "TypeScript", slug: "typescript", category: "languages", proficiency: 4 },
     
     // Frameworks
-    { name: "Spring Boot", slug: "springboot", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/springboot" },
-    { name: "ASP.NET", slug: "dotnet", category: "frameworks", proficiency: 5, image: "https://cdn.simpleicons.org/dotnet" },
-    { name: "Django", slug: "django", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/django" },
-    { name: "Angular", slug: "angular", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/angular" },
-    { name: "React", slug: "react", category: "frameworks", proficiency: 5, image: "https://cdn.simpleicons.org/react" },
-    { name: "Node.js", slug: "nodedotjs", category: "frameworks", proficiency: 4, image: "https://cdn.simpleicons.org/nodedotjs" },
+    { name: "Spring Boot", slug: "springboot", category: "frameworks", proficiency: 4 },
+    { name: "ASP.NET", slug: "dotnet", category: "frameworks", proficiency: 5 },
+    { name: "Django", slug: "django", category: "frameworks", proficiency: 4 },
+    { name: "Angular", slug: "angular", category: "frameworks", proficiency: 4 },
+    { name: "React", slug: "react", category: "frameworks", proficiency: 5 },
+    { name: "Node.js", slug: "nodedotjs", category: "frameworks", proficiency: 4 },
     
     // Databases
-    { name: "MySQL", slug: "mysql", category: "databases", proficiency: 5, image: "https://cdn.simpleicons.org/mysql" },
-    { name: "Oracle", slug: "oracle", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/oracle" },
-    { name: "PostgreSQL", slug: "postgresql", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/postgresql" },
-    { name: "SQL Server", slug: "microsoftsqlserver", category: "databases", proficiency: 5, image: "https://cdn.simpleicons.org/microsoftsqlserver" },
-    { name: "MongoDB", slug: "mongodb", category: "databases", proficiency: 4, image: "https://cdn.simpleicons.org/mongodb" },
+    { name: "MySQL", slug: "mysql", category: "databases", proficiency: 5 },
+    { name: "Oracle", slug: "oracle", category: "databases", proficiency: 4 },
+    { name: "PostgreSQL", slug: "postgresql", category: "databases", proficiency: 4 },
+    { name: "SQL Server", slug: "microsoftsqlserver", category: "databases", proficiency: 5 },
+    { name: "MongoDB", slug: "mongodb", category: "databases", proficiency: 4 },
     
     // DevOps
-    { name: "Docker", slug: "docker", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/docker" },
-    { name: "AWS", slug: "amazonaws", category: "devops", proficiency: 3, image: "https://cdn.simpleicons.org/amazonaws" },
-    { name: "Azure", slug: "microsoftazure", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/microsoftazure" },
-    { name: "Linux", slug: "linux", category: "devops", proficiency: 4, image: "https://cdn.simpleicons.org/linux" },
-    { name: "Git", slug: "git", category: "devops", proficiency: 5, image: "https://cdn.simpleicons.org/git" },
-    { name: "GitHub", slug: "github", category: "devops", proficiency: 5, image: "https://cdn.simpleicons.org/github" },
+    { name: "Docker", slug: "docker", category: "devops", proficiency: 4 },
+    { name: "AWS", slug: "amazonaws", category: "devops", proficiency: 3 },
+    { name: "Azure", slug: "microsoftazure", category: "devops", proficiency: 4 },
+    { name: "Linux", slug: "linux", category: "devops", proficiency: 4 },
+    { name: "Git", slug: "git", category: "devops", proficiency: 5 },
+    { name: "GitHub", slug: "github", category: "devops", proficiency: 5 },
     
     // Tools
-    { name: "VS Code", slug: "visualstudiocode", category: "tools", proficiency: 5, image: "https://cdn.simpleicons.org/visualstudiocode" },
-    { name: "IntelliJ", slug: "intellijidea", category: "tools", proficiency: 4, image: "https://cdn.simpleicons.org/intellijidea" },
-    { name: "Postman", slug: "postman", category: "tools", proficiency: 4, image: "https://cdn.simpleicons.org/postman" },
-    { name: "Figma", slug: "figma", category: "tools", proficiency: 3, image: "https://cdn.simpleicons.org/figma" },
+    { name: "VS Code", slug: "visualstudiocode", category: "tools", proficiency: 5 },
+    { name: "IntelliJ", slug: "intellijidea", category: "tools", proficiency: 4 },
+    { name: "Postman", slug: "postman", category: "tools", proficiency: 4 },
+    { name: "Figma", slug: "figma", category: "tools", proficiency: 3 },
   ], []);
+
+  const techImages = useMemo(() => skills.map(skill => ({
+    ...skill,
+    image: `https://cdn.simpleicons.org/${skill.slug}`,
+  })), [skills]);
 
   // Memoize stars to prevent recreation
   const stars = useMemo(() => 
@@ -467,7 +472,7 @@ export function Skills() {
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, delay: 0.6 }}
             >
-              <IconCloud skills={skills} />
+              <IconCloud skills={techImages} />
             </motion.div>
 
             {/* Skills Summary */}

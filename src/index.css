@@ -13,12 +13,6 @@ html {
 
 body {
   @apply bg-[#0B1120];
-  /* Optimize font rendering */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  /* Optimize scrolling performance */
-  overscroll-behavior: none;
 }
 
 .dark {
@@ -67,21 +61,6 @@ body {
   box-sizing: border-box;
 }
 
-/* GPU acceleration for animations */
-.gpu-accelerated {
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-/* Optimize image rendering */
-img {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  /* Prevent layout shift */
-  height: auto;
-  max-width: 100%;
-}
-
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -94,74 +73,28 @@ img {
   }
 }
 
-/* Optimize font loading */
+/* Optimize font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optimize image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Preload critical fonts */
 @font-face {
   font-family: 'Poppins';
   font-display: swap;
-  font-weight: 300 700;
   src: url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-}
-
-/* Critical CSS for above-the-fold content */
-.hero-section {
-  contain: layout style paint;
-}
-
-/* Optimize animations */
-@media (prefers-reduced-motion: no-preference) {
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
-  
-  .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-}
-
-/* Optimize for touch devices */
-@media (hover: none) and (pointer: coarse) {
-  .hover\:scale-105:hover {
-    transform: none;
-  }
-  
-  .hover\:bg-white\/20:hover {
-    background-color: initial;
-  }
-}
-
-/* Optimize for high DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  img {
-    image-rendering: -webkit-optimize-contrast;
-  }
-}
-
-/* Preload critical resources */
-.preload-critical {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 1000px;
-}
-
-/* Optimize layout shifts */
-.aspect-ratio-16-9 {
-  aspect-ratio: 16 / 9;
-}
-
-.aspect-ratio-1-1 {
-  aspect-ratio: 1 / 1;
-}
-
-/* Optimize text rendering */
-.optimize-text {
-  text-rendering: optimizeSpeed;
-  font-feature-settings: "kern" 1;
-  font-kerning: normal;
-}
-
-/* Optimize for mobile */
-@media (max-width: 768px) {
-  .mobile-optimize {
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-  }
 }
