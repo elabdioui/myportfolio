@@ -28,7 +28,7 @@ export function About() {
       icon: <Briefcase className="w-5 h-5" />,
       color: "from-green-400 to-emerald-500",
       story: "Leading the digital transformation of LPG distribution systems across Cameroon",
-      logo: "/src/assets/ola eenergy.png"
+      logo: "/src/assets/ola-energy-logo.png"
     },
     {
       year: "2024",
@@ -44,7 +44,7 @@ export function About() {
       icon: <Code className="w-5 h-5" />,
       color: "from-blue-400 to-cyan-500",
       story: "Transforming manual billing processes into an automated, efficient system",
-      logo: "/src/assets/sews.png"
+      logo: "/src/assets/sews-cabind-logo.png"
     },
     {
       year: "2023",
@@ -59,7 +59,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-purple-400 to-violet-500",
       story: "Mastering the intersection of technology and business management",
-      logo: "/src/assets/EMSI_Logo.png",
+      logo: "/src/assets/emsi-logo.png",
       technologies: ["react", "nodejs", "python", "java", "csharp"]
     },
     {
@@ -83,12 +83,12 @@ export function About() {
       title: "Scientific Baccalaureate",
       type: "education",
       duration: "2020 - 2021",
-      description: "Physical Sciences & Chemistry at Lycée Al Yassamine, Berrechid",
+      description: "Physical Sciences & Chemistry at Yassamine International School, Berrechid",
       details: ["Strong foundation in scientific principles and analytical thinking"],
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-pink-400 to-rose-500",
       story: "Where analytical thinking and problem-solving skills were born",
-      logo: "https://images.pexels.com/photos/207692/pexels-photo-207692.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/yassamine-school-logo.png"
     }
   ], []);
 
