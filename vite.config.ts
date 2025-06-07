@@ -10,8 +10,6 @@ export default defineConfig({
     react({
       // Enable React Fast Refresh
       fastRefresh: true,
-      // Optimize React imports
-      jsxImportSource: '@emotion/react',
     }),
     // PWA for caching and offline support
     VitePWA({

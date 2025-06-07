@@ -12,6 +12,7 @@
     "analyze": "npx vite-bundle-analyzer"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
     "@tailwindcss/vite": "^4.1.8",
     "@types/three": "^0.176.0",
     "framer-motion": "^11.0.8",
