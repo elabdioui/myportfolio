@@ -1,8 +1,51 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Code2, Github, Linkedin, Download, MapPin } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, memo } from 'react';
 
-export function Hero() {
+const ParticleField = memo(() => {
+  const particles = useMemo(() => 
+    [...Array(20)].map((_, i) => ({
+      id: i,
+      initialX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+      initialY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+      scale: Math.random() * 0.5 + 0.5,
+      opacity: Math.random() * 0.8 + 0.2,
+    })), []
+  );
+
+  return (
+    <div className="absolute inset-0">
+      {particles.map((particle) => (
+        <motion.div
+          key={particle.id}
+          className="absolute h-1 w-1 bg-white rounded-full"
+          initial={{
+            x: particle.initialX,
+            y: particle.initialY,
+            scale: particle.scale,
+            opacity: particle.opacity,
+          }}
+          animate={{
+            x: [particle.initialX, particle.initialX + Math.random() * 200 - 100],
+            y: [particle.initialY, particle.initialY + Math.random() * 200 - 100],
+            scale: [particle.scale, particle.scale * 1.5, particle.scale],
+            opacity: [particle.opacity, particle.opacity * 1.5, particle.opacity],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 15,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+});
+
+ParticleField.displayName = 'ParticleField';
+
+export const Hero = memo(() => {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   const springConfig = { damping: 25, stiffness: 700 };
@@ -15,20 +58,30 @@ export function Hero() {
       cursorY.set(e.clientY - 16);
     };
 
-    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mousemove', moveCursor, { passive: true });
     return () => window.removeEventListener('mousemove', moveCursor);
   }, [cursorX, cursorY]);
 
-  // Memoize particles to prevent recreation on every render
-  const particles = useMemo(() => 
-    [...Array(30)].map((_, i) => ({
-      id: i,
-      initialX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-      initialY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-      scale: Math.random() * 0.5 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-    })), []
-  );
+  const socialLinks = useMemo(() => [
+    { 
+      icon: <Github className="w-7 h-7" />, 
+      href: "https://github.com/elabdioui",
+      label: "GitHub",
+      color: "hover:text-gray-300"
+    },
+    { 
+      icon: <Linkedin className="w-7 h-7" />, 
+      href: "https://www.linkedin.com/in/haithamelabdioui/",
+      label: "LinkedIn",
+      color: "hover:text-blue-400"
+    },
+    { 
+      icon: <Code2 className="w-7 h-7" />, 
+      href: "#projects",
+      label: "Projects",
+      color: "hover:text-purple-400"
+    },
+  ], []);
 
   return (
     <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden">
@@ -78,7 +131,7 @@ export function Hero() {
 
       {/* Optimized Custom Cursor */}
       <motion.div
-        className="w-8 h-8 bg-white rounded-full fixed top-0 left-0 pointer-events-none z-50 mix-blend-difference"
+        className="w-8 h-8 bg-white rounded-full fixed top-0 left-0 pointer-events-none z-50 mix-blend-difference hidden md:block"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -86,32 +139,7 @@ export function Hero() {
       />
 
       {/* Optimized Background Particles */}
-      <div className="absolute inset-0">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute h-1 w-1 bg-white rounded-full"
-            initial={{
-              x: particle.initialX,
-              y: particle.initialY,
-              scale: particle.scale,
-              opacity: particle.opacity,
-            }}
-            animate={{
-              x: [particle.initialX, particle.initialX + Math.random() * 200 - 100],
-              y: [particle.initialY, particle.initialY + Math.random() * 200 - 100],
-              scale: [particle.scale, particle.scale * 1.5, particle.scale],
-              opacity: [particle.opacity, particle.opacity * 1.5, particle.opacity],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 15,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      <ParticleField />
       
       {/* Main Content */}
       <div className="container mx-auto px-4 text-center z-10 max-w-6xl mt-20 md:mt-32">
@@ -219,26 +247,7 @@ export function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1.4, duration: 0.8 }}
           >
-            {[
-              { 
-                icon: <Github className="w-7 h-7" />, 
-                href: "https://github.com/elabdioui",
-                label: "GitHub",
-                color: "hover:text-gray-300"
-              },
-              { 
-                icon: <Linkedin className="w-7 h-7" />, 
-                href: "https://www.linkedin.com/in/haithamelabdioui/",
-                label: "LinkedIn",
-                color: "hover:text-blue-400"
-              },
-              { 
-                icon: <Code2 className="w-7 h-7" />, 
-                href: "#projects",
-                label: "Projects",
-                color: "hover:text-purple-400"
-              },
-            ].map((item, index) => (
+            {socialLinks.map((item, index) => (
               <motion.a
                 key={index}
                 href={item.href}
@@ -291,4 +300,6 @@ export function Hero() {
       </motion.div>
     </section>
   );
-}
+});
+
+Hero.displayName = 'Hero';

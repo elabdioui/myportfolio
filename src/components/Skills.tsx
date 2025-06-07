@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, memo, lazy, Suspense } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { Code, Database, Cloud, Settings, Wrench, Star } from 'lucide-react';
-import { LazyImage } from './LazyImage';
+
+// Lazy load the LazyImage component
+const LazyImage = lazy(() => import('./LazyImage').then(module => ({ default: module.LazyImage })));
 
 interface Skill {
   name: string;
@@ -16,7 +18,73 @@ interface IconCloudProps {
   skills: Skill[];
 }
 
-function IconCloud({ skills }: IconCloudProps) {
+const SkillTooltip = memo(({ skill, mousePosition, containerRef }: {
+  skill: Skill | null;
+  mousePosition: { x: number; y: number };
+  containerRef: React.RefObject<HTMLDivElement>;
+}) => {
+  const categoryColors = {
+    languages: "from-blue-500 to-cyan-500",
+    frameworks: "from-green-500 to-emerald-500", 
+    databases: "from-purple-500 to-violet-500",
+    devops: "from-orange-500 to-red-500",
+    tools: "from-yellow-500 to-amber-500",
+  };
+
+  const categoryIcons = {
+    languages: <Code className="w-4 h-4" />,
+    frameworks: <Settings className="w-4 h-4" />,
+    databases: <Database className="w-4 h-4" />,
+    devops: <Cloud className="w-4 h-4" />,
+    tools: <Wrench className="w-4 h-4" />,
+  };
+
+  if (!skill) return null;
+
+  return (
+    <motion.div 
+      className="fixed z-50 pointer-events-none"
+      style={{
+        left: mousePosition.x + (containerRef.current?.getBoundingClientRect().left || 0) + 20,
+        top: mousePosition.y + (containerRef.current?.getBoundingClientRect().top || 0) - 100,
+      }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
+    >
+      <div className="bg-black/95 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl max-w-xs">
+        <div className="flex items-center gap-3 mb-2">
+          <div className={`p-1 bg-gradient-to-r ${categoryColors[skill.category as keyof typeof categoryColors]} rounded-md`}>
+            {categoryIcons[skill.category as keyof typeof categoryIcons]}
+          </div>
+          <p className="text-white font-semibold text-lg">{skill.name}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-gray-300 text-sm">Proficiency:</span>
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-3 h-3 ${
+                  i < skill.proficiency 
+                    ? 'text-yellow-400 fill-current' 
+                    : 'text-gray-600'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-blue-400 text-sm font-medium">
+            {skill.proficiency}/5
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+
+SkillTooltip.displayName = 'SkillTooltip';
+
+const IconCloud = memo(({ skills }: IconCloudProps) => {
   const [isGlobalHovered, setIsGlobalHovered] = useState(false);
   const [hoveredSkill, setHoveredSkill] = useState<Skill | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -30,14 +98,6 @@ function IconCloud({ skills }: IconCloudProps) {
     tools: "from-yellow-500 to-amber-500",
   }), []);
 
-  const categoryIcons = useMemo(() => ({
-    languages: <Code className="w-4 h-4" />,
-    frameworks: <Settings className="w-4 h-4" />,
-    databases: <Database className="w-4 h-4" />,
-    devops: <Cloud className="w-4 h-4" />,
-    tools: <Wrench className="w-4 h-4" />,
-  }), []);
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
@@ -49,13 +109,14 @@ function IconCloud({ skills }: IconCloudProps) {
       }
     };
 
-    if (containerRef.current) {
-      containerRef.current.addEventListener('mousemove', handleMouseMove);
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('mousemove', handleMouseMove, { passive: true });
     }
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.removeEventListener('mousemove', handleMouseMove);
+      if (container) {
+        container.removeEventListener('mousemove', handleMouseMove);
       }
     };
   }, []);
@@ -78,49 +139,11 @@ function IconCloud({ skills }: IconCloudProps) {
 
   return (
     <div className="relative w-full max-w-3xl mx-auto">
-      {/* Skill Tooltip */}
-      <motion.div 
-        className="fixed z-50 pointer-events-none"
-        style={{
-          left: mousePosition.x + (containerRef.current?.getBoundingClientRect().left || 0) + 20,
-          top: mousePosition.y + (containerRef.current?.getBoundingClientRect().top || 0) - 100,
-        }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ 
-          opacity: hoveredSkill ? 1 : 0,
-          scale: hoveredSkill ? 1 : 0.8,
-        }}
-        transition={{ duration: 0.2 }}
-      >
-        {hoveredSkill && (
-          <div className="bg-black/95 backdrop-blur-sm px-4 py-3 rounded-xl border border-white/20 shadow-2xl max-w-xs">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`p-1 bg-gradient-to-r ${categoryColors[hoveredSkill.category as keyof typeof categoryColors]} rounded-md`}>
-                {categoryIcons[hoveredSkill.category as keyof typeof categoryIcons]}
-              </div>
-              <p className="text-white font-semibold text-lg">{hoveredSkill.name}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-gray-300 text-sm">Proficiency:</span>
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-3 h-3 ${
-                      i < hoveredSkill.proficiency 
-                        ? 'text-yellow-400 fill-current' 
-                        : 'text-gray-600'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-blue-400 text-sm font-medium">
-                {hoveredSkill.proficiency}/5
-              </span>
-            </div>
-          </div>
-        )}
-      </motion.div>
+      <SkillTooltip 
+        skill={hoveredSkill} 
+        mousePosition={mousePosition} 
+        containerRef={containerRef} 
+      />
 
       <div 
         ref={containerRef}
@@ -194,11 +217,13 @@ function IconCloud({ skills }: IconCloudProps) {
                       transition: { duration: 0.6 }
                     }}
                   >
-                    <LazyImage
-                      src={skill.image}
-                      alt={skill.name}
-                      className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
-                    />
+                    <Suspense fallback={<div className="w-10 h-10 bg-gray-600 rounded animate-pulse" />}>
+                      <LazyImage
+                        src={skill.image}
+                        alt={skill.name}
+                        className="w-10 h-10 object-contain filter brightness-90 group-hover:brightness-110 transition-all duration-300 pointer-events-none"
+                      />
+                    </Suspense>
                   </motion.div>
                   
                   {/* Category indicator */}
@@ -274,6 +299,14 @@ function IconCloud({ skills }: IconCloudProps) {
           const categorySkills = skills.filter(skill => skill.category === category);
           const avgProficiency = categorySkills.reduce((sum, skill) => sum + skill.proficiency, 0) / categorySkills.length;
           
+          const categoryIcons = {
+            languages: <Code className="w-4 h-4" />,
+            frameworks: <Settings className="w-4 h-4" />,
+            databases: <Database className="w-4 h-4" />,
+            devops: <Cloud className="w-4 h-4" />,
+            tools: <Wrench className="w-4 h-4" />,
+          };
+          
           return (
             <motion.div 
               key={category} 
@@ -312,9 +345,11 @@ function IconCloud({ skills }: IconCloudProps) {
       </div>
     </div>
   );
-}
+});
 
-export function Skills() {
+IconCloud.displayName = 'IconCloud';
+
+export const Skills = memo(() => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -367,7 +402,7 @@ export function Skills() {
 
   // Memoize stars to prevent recreation
   const stars = useMemo(() => 
-    [...Array(75)].map((_, i) => ({
+    [...Array(50)].map((_, i) => ({
       id: i,
       width: Math.random() * 3 + 1,
       height: Math.random() * 3 + 1,
@@ -507,4 +542,6 @@ export function Skills() {
       </section>
     </>
   );
-}
+});
+
+Skills.displayName = 'Skills';
