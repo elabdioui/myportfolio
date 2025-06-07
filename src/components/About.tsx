@@ -28,7 +28,7 @@ export function About() {
       icon: <Briefcase className="w-5 h-5" />,
       color: "from-green-400 to-emerald-500",
       story: "Leading the digital transformation of LPG distribution systems across Cameroon",
-      logo: "https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/ola eenergy.png"
     },
     {
       year: "2024",
@@ -44,7 +44,7 @@ export function About() {
       icon: <Code className="w-5 h-5" />,
       color: "from-blue-400 to-cyan-500",
       story: "Transforming manual billing processes into an automated, efficient system",
-      logo: "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1"
+      logo: "/src/assets/sews.png"
     },
     {
       year: "2023",
@@ -59,7 +59,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-purple-400 to-violet-500",
       story: "Mastering the intersection of technology and business management",
-      logo: "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
+      logo: "/src/assets/EMSI_Logo.png",
       technologies: ["react", "nodejs", "python", "java", "csharp"]
     },
     {
@@ -75,7 +75,7 @@ export function About() {
       icon: <GraduationCap className="w-5 h-5" />,
       color: "from-indigo-400 to-purple-500",
       story: "Discovering the mathematical foundations of computer science",
-      logo: "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&dpr=1",
+      logo: "/src/assets/fst.png",
       technologies: ["python", "java", "matlab"]
     },
     {
