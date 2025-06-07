@@ -154,15 +154,6 @@ export default defineConfig({
   // Enable CSS code splitting
   css: {
     devSourcemap: false,
-    // CSS optimization
-    postcss: {
-      plugins: [
-        require('autoprefixer'),
-        require('cssnano')({
-          preset: 'default',
-        }),
-      ],
-    },
   },
   // Server configuration for development
   server: {
