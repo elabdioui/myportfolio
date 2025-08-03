@@ -1,0 +1,34 @@
+// SCSS Variables for better maintainability
+$primary-bg: #0B1120;
+$primary-blue: #3B82F6;
+$primary-purple: #8B5CF6;
+$primary-pink: #EC4899;
+
+$text-white: #FFFFFF;
+$text-gray-300: #D1D5DB;
+$text-gray-400: #9CA3AF;
+
+$border-white-10: rgba(255, 255, 255, 0.1);
+$border-white-20: rgba(255, 255, 255, 0.2);
+
+$backdrop-blur-sm: blur(8px);
+$backdrop-blur-md: blur(12px);
+
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// Animation durations
+$animation-fast: 0.2s;
+$animation-normal: 0.3s;
+$animation-slow: 0.5s;
+
+// Z-index layers
+$z-background: 0;
+$z-content: 10;
+$z-navbar: 40;
+$z-modal: 50;
+$z-cursor: 60;

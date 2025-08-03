@@ -1,6 +1,10 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Code2, Github, Linkedin, Download, MapPin } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
+import { AnimatedSection } from './UI/AnimatedSection';
+import { StarField } from './UI/StarField';
+import { SITE_CONFIG } from '../utils/constants';
+import { useStarsGenerator, useThrottle } from '../hooks/usePerformanceOptimization';
 
 export function Hero() {
   const cursorX = useMotionValue(-100);
@@ -9,29 +13,26 @@ export function Hero() {
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
+  // Throttle mouse movement for better performance
+  const throttledMouseMove = useThrottle((e: MouseEvent) => {
+    cursorX.set(e.clientX - 16);
+    cursorY.set(e.clientY - 16);
+  }, 16); // ~60fps
+
   useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 16);
-      cursorY.set(e.clientY - 16);
-    };
+    window.addEventListener('mousemove', throttledMouseMove);
+    return () => window.removeEventListener('mousemove', throttledMouseMove);
+  }, [throttledMouseMove]);
 
-    window.addEventListener('mousemove', moveCursor);
-    return () => window.removeEventListener('mousemove', moveCursor);
-  }, [cursorX, cursorY]);
-
-  // Memoize particles to prevent recreation on every render
-  const particles = useMemo(() => 
-    [...Array(30)].map((_, i) => ({
-      id: i,
-      initialX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-      initialY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-      scale: Math.random() * 0.5 + 0.5,
-      opacity: Math.random() * 0.8 + 0.2,
-    })), []
-  );
+  // Generate optimized particles
+  const particles = useStarsGenerator(30);
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden">
+    <AnimatedSection 
+      id="hero" 
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-purple-900 text-white relative overflow-hidden"
+      variant="fadeInUp"
+    >
       {/* Optimized Aurora Text CSS */}
       <style>{`
         @keyframes aurora {
@@ -86,32 +87,7 @@ export function Hero() {
       />
 
       {/* Optimized Background Particles */}
-      <div className="absolute inset-0">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute h-1 w-1 bg-white rounded-full"
-            initial={{
-              x: particle.initialX,
-              y: particle.initialY,
-              scale: particle.scale,
-              opacity: particle.opacity,
-            }}
-            animate={{
-              x: [particle.initialX, particle.initialX + Math.random() * 200 - 100],
-              y: [particle.initialY, particle.initialY + Math.random() * 200 - 100],
-              scale: [particle.scale, particle.scale * 1.5, particle.scale],
-              opacity: [particle.opacity, particle.opacity * 1.5, particle.opacity],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 15,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
+      <StarField count={30} />
       
       {/* Main Content */}
       <div className="container mx-auto px-4 text-center z-10 max-w-6xl mt-20 md:mt-32">
@@ -137,7 +113,7 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
           >
-            Haitham El Abdioui
+            {SITE_CONFIG.name}
           </motion.h1>
 
           {/* Professional Title */}
@@ -170,14 +146,14 @@ export function Hero() {
                 whileHover={{ scale: 1.05, color: "#60a5fa" }}
               >
                 <MapPin className="w-4 h-4" />
-                <span>Casablanca, Morocco</span>
+                <span>{SITE_CONFIG.location}</span>
               </motion.div>
               <motion.div 
                 className="flex items-center gap-2"
                 whileHover={{ scale: 1.05, color: "#a78bfa" }}
               >
                 <Code2 className="w-4 h-4" />
-                <span>Available for Internship</span>
+                <span>{SITE_CONFIG.availability}</span>
               </motion.div>
             </div>
           </motion.div>
@@ -222,13 +198,13 @@ export function Hero() {
             {[
               { 
                 icon: <Github className="w-7 h-7" />, 
-                href: "https://github.com/elabdioui",
+                href: SITE_CONFIG.social.github,
                 label: "GitHub",
                 color: "hover:text-gray-300"
               },
               { 
                 icon: <Linkedin className="w-7 h-7" />, 
-                href: "https://www.linkedin.com/in/haithamelabdioui/",
+                href: SITE_CONFIG.social.linkedin,
                 label: "LinkedIn",
                 color: "hover:text-blue-400"
               },
@@ -289,6 +265,6 @@ export function Hero() {
           </motion.div>
         </a>
       </motion.div>
-    </section>
+    </AnimatedSection>
   );
 }
